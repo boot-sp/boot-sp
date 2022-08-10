@@ -1,0 +1,18 @@
+{
+    "module_name": "farmer",
+    "optimal_fname": "farmer_optimal.npy",
+    "xhat_fname": "farmer_xhat.npy",
+    "max_count": 1000, 
+    "candidate_sample_size": 1,
+    "sample_size": 75,
+    "subsample_size": 10,
+    "nB": 100,
+    "alpha": 0.05,
+    "seed_offset" : 0,
+    "solver_name": "cplex_direct",
+    "boot_method": "Bagging_with_replacement",
+    "trace_fname" : "None",
+    "coverage_replications": 100,
+    "crops_multiplier": 1,
+    "farmer_with_integers": "False"
+    }
