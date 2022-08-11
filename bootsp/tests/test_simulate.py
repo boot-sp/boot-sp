@@ -25,10 +25,6 @@ my_dir = os.path.dirname(os.path.abspath(__file__))
 main_example_path = os.path.join(my_dir,"..","..","examples")
 if not os.path.exists(main_example_path):
     raise RuntimeError(f"Directory not found: {main_example_path}")
-example_path = os.path.join(my_dir,"examples")
-if not os.path.exists(example_path):
-    raise RuntimeError(f"Directory not found: {example_path}")
-
 
 methods = ["Classical_gaussian",
          "Classical_quantile",
@@ -74,12 +70,6 @@ class Test_simulate(unittest.TestCase):
         return jpath
 
     
-    def _cd_to_mod(self, module_name):
-        # assume the module is in the test area
-        dname = os.path.join(example_path, module_name)
-        os.chdir(dname)
-
-        
     def _do_one(self, dirname, module_name):
         # do the test, return a dictionary of return values
         ret_dict = dict()
