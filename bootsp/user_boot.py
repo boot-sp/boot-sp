@@ -55,6 +55,5 @@ if __name__ == '__main__':
 
     xhat_fname = cfg["xhat_fname"]
 
-
     main_routine(cfg, module)
 
