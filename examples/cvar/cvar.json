@@ -1,0 +1,16 @@
+{
+    "module_name": "cvar",
+    "max_count": 9999, 
+    "candidate_sample_size": 20,
+    "sample_size": 75,
+    "subsample_size": 10,
+    "nB": 10,
+    "alpha": 0.05,
+    "seed_offset" :100,
+    "optimal_fname": "cvar_optimal.npy",
+    "xhat_fname": "cvar_xhat.npy",
+    "solver_name": "cplex_direct",
+    "boot_method": "Bagging_with_replacement",
+    "trace_fname" : "None",
+    "coverage_replications": 10
+}

@@ -120,6 +120,7 @@ def scenario_denouement(rank, scenario_name, scenario):
     pass
 
 if __name__ == "__main__":
+    # This is command line callable just to support ad hoc testing by developers
     m = scenario_creator("scen0")
     opt = pyo.SolverFactory('cplex')
     results = opt.solve(m)

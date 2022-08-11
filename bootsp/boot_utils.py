@@ -225,7 +225,7 @@ def compute_xhat(cfg, module):
     xhat_fct = getattr(module, xhat_fct_name)
     xhat_k = xhat_fct(xhat_scenario_names, solvername=cfg.solver_name, **xgo)
     return xhat_k
-                
+
 
 if __name__ == "__main__":
     print("boot_utils does not have a main program.")

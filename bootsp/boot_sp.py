@@ -1,7 +1,6 @@
 # general-purpose bootstrap code
 from os import dup, replace
-from mpisppy import global_toc
-import farmer
+import json
 import mpisppy.utils.sputils as sputils
 import mpisppy.utils.xhat_eval as xhat_eval
 import pyomo.environ as pyo
@@ -12,7 +11,6 @@ import scipy.stats as ss
 import matplotlib.pyplot as plt
 # TBD: we are using the mpi-sppy MPI wrapper to try to help windows users live without MPI.
 import mpisppy.MPI as MPI
-import json
 
 n_proc = MPI.COMM_WORLD.Get_size()
 my_rank = MPI.COMM_WORLD.Get_rank()

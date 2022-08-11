@@ -4,8 +4,8 @@ import sys
 import numpy as np
 import mpisppy.utils.config as config
 import mpisppy.confidence_intervals.ciutils as ciutils
-import boot_utils
-import boot_sp
+import bootsp.boot_utils as boot_utils
+import bootsp.boot_sp as boot_sp
 
 # TBD: we are using the mpi-sppy MPI wrapper to help windows users live without MPI.
 import mpisppy.MPI as MPI

@@ -3,12 +3,17 @@ import time
 import numpy as np
 import mpisppy.utils.config as config
 import mpisppy.confidence_intervals.ciutils as ciutils
-import boot_utils
-import boot_sp
+import bootsp.boot_utils as boot_utils
+import bootsp.boot_sp as boot_sp
+import bootsp.simulate_boot as simulate_boot
 import datetime
-import simulate_boot
 
-# TBD: we are using the mpi-sppy MPI wrapper to help windows users live without MPI.
+import mpisppy.utils.sputils as sputils
+print("Disabling tictoc output so there will be very little terminal output.")
+sputils.disable_tictoc_output()
+
+
+# We are using the mpi-sppy MPI wrapper to help windows users live without MPI.
 import mpisppy.MPI as MPI
 my_rank = MPI.COMM_WORLD.Get_rank()
 
@@ -29,6 +34,7 @@ if __name__ == '__main__':
                         "cvar": [50, 100],
                         "farmer": [30, 60]
                     }
+    
     nB_list = [100, 500]
     method_kfac = {"Classical_gaussian" : [0],
                    "Classical_quantile" : [0],

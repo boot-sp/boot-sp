@@ -109,7 +109,7 @@ def scenario_denouement(rank, scenario_name, scenario):
     pass
 
 if __name__ == "__main__":
-    # main program just for developer testing
+    # main program just for developer testing (and therefore might not execute)
 
     solver_name = "cplex"
     cfg = config.Config()
