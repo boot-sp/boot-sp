@@ -5,8 +5,8 @@ import time
 import numpy as np
 import mpisppy.utils.config as config
 import mpisppy.confidence_intervals.ciutils as ciutils
-import bootsp.boot_utils as boot_utils
-import bootsp.boot_sp as boot_sp
+import boot_utils
+import boot_sp
 
 # TBD: we are using the mpi-sppy MPI wrapper to help windows users live without MPI.
 import mpisppy.MPI as MPI
@@ -66,9 +66,12 @@ def main_routine(cfg, module):
                     f.write(f"ci for function value at xhat: {ci_upper}\n")
                     f.write(f"optimality gap: {opt_gap}\n")   
                     f.write(f"ci for optimality gap: {ci_gap}\n")
-            if (ci_gap[0] <= opt_gap) and (opt_gap<=ci_gap[1]):
+            # if (ci_gap[0] <= opt_gap) and (opt_gap<=ci_gap[1]):
+            #     coverage_cnt += 1
+            # total_len += ci_gap[1] - ci_gap[0]    
+            if (ci_optimal[0] <= opt_obj) and (opt_obj<=ci_optimal[1]):
                 coverage_cnt += 1
-            total_len += ci_gap[1] - ci_gap[0]    
+            total_len += ci_optimal[1] - ci_optimal[0]    
 
     # only rank 0 gets accumulated confidence interval
     if my_rank == 0:
