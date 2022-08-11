@@ -33,6 +33,10 @@ jobs:
         run: |
           git clone https://github.com/pyomo/mpi-sppy
           cd mpi-sppy && python setup.py develop
+      - name: set up mpi-sppy
+        run: |
+          git clone https://github.com/pyomo/mpi-sppy
+          cd mpi-sppy && python setup.py develop
 
       - name: setup the program
         run: |
