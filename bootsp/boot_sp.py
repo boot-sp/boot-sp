@@ -1,14 +1,10 @@
 # general-purpose bootstrap code
-from os import dup, replace
-import json
 import mpisppy.utils.sputils as sputils
 import mpisppy.utils.xhat_eval as xhat_eval
 import pyomo.environ as pyo
-import sys
 import numpy as np
 from numpy.random import default_rng
 import scipy.stats as ss
-import matplotlib.pyplot as plt
 # TBD: we are using the mpi-sppy MPI wrapper to try to help windows users live without MPI.
 import mpisppy.MPI as MPI
 

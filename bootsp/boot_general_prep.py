@@ -1,22 +1,11 @@
-from os import dup, replace
-import farmer
 import mpisppy.utils.sputils as sputils
-import mpisppy.utils.xhat_eval as xhat_eval
 import mpisppy.confidence_intervals.ciutils as ciutils
 import pyomo.environ as pyo
 import sys
 import numpy as np
-from numpy.random import default_rng
-import scipy.stats as ss
-import matplotlib.pyplot as plt
-import time
 from mpi4py import MPI
-import json
 import boot_sp
-import mpisppy.utils.config as config
 import boot_utils
-import inspect
-import importlib
 
 # Compute the optimal function value with max_count scenarios
 #(maybe read this from a file)
