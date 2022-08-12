@@ -13,9 +13,8 @@ import bootsp.boot_utils as boot_utils
 import bootsp.user_boot as user_boot
 
 import mpisppy.utils.sputils as sputils
-print("Disabling tictoc output so there will be very little terminal output.")
-sputils.disable_tictoc_output()
 
+### sputils.disable_tictoc_output()
 
 from mpisppy.tests.utils import get_solver,round_pos_sig
 

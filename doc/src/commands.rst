@@ -16,7 +16,7 @@ The command for user mode is
 
 .. code-block:: bash
 
-   $ python -m user_boot module arguments
+   $ python -m bootsp.user_boot module arguments
 
 where ``module`` is the name of a Python module (without `.py`, even
 though the filen name itself has `'py`) such as farmer that contains a
@@ -35,7 +35,7 @@ The command for simulation mode is
 
 .. code-block:: bash
 
-   $ python -m simulation_boot filename
+   $ python -m bootsp.simulate_boot filename
 
 where ``filename`` is the name of a Python such as `farmer.json` that contains a full `Arguments`_ set for the simulation.
 
@@ -84,7 +84,7 @@ some discusion. In the json format, all string values are quote delimited.
       
     - "Extended": Extended bootstrap as described in [eichhorn2007stochastic]_
 
-    - "Subsampling": xxxxxxxxx
+    - "Subsampling": A subsampling bootstrap mention briefly in [eichhorn2007stochastic]_
 
     - "Bagging_with_replacement": Bagging with replacement [lam2018assessing]_
 
@@ -92,7 +92,31 @@ some discusion. In the json format, all string values are quote delimited.
 
 
 
-Examples
---------
+Farmer Examples
+---------------
 
-xxxxxxxxxxxx one of each
+For these two examples, cd to ``boot-sp/examples/farmer``.
+
+simulate
+^^^^^^^^
+
+.. code-block:: bash
+
+   $ python -m bootsp.simulate_boot farmer.json
+
+simulate
+^^^^^^^^
+
+.. code-block:: bash
+
+   $ python -m bootsp.simulate_boot farmer.json
+   
+
+user
+^^^^
+
+.. code-block:: bash
+
+    $ python -m bootsp.user_boot farmer --max-count 121 --candidate-sample-size 1 --sample-size 75 --subsample-size 10 --nB 10 --alpha 0.05 --seed-offset 100  --solver-name cplex --boot-method Bagging_with_replacement --xhat-fname farmer_xhat.npy
+
+Note that in this particular command ``--candidate-sample-size 1`` is ignored because a precomputed xhat is provided by ``--xhat-fname farmer_xhat.npy``

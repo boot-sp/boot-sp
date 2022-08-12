@@ -133,7 +133,8 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
                          "iterk_solver_options": None,
                          "display_timing": False,
                          "solvername": cfg.solver_name,
-                         "verbose": False
+                         "verbose": False,
+                         "no_toc": True
                          }
 
     scenario_creator = scenario_creator_w_mapping
