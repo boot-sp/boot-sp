@@ -9,7 +9,7 @@
     "seed_offset" :100,
     "optimal_fname": "nonunique_schultz_optimal.npy",
     "xhat_fname": "nonunique_schultz_xhat.npy",
-    "solver_name": "gurobi_direct",
+    "solver_name": "cplex_direct",
     "boot_method": "Classical_gaussian",
     "trace_fname" : "None",
     "coverage_replications": 100

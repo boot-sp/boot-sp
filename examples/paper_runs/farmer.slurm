@@ -17,6 +17,6 @@ conda activate mpisppy
 
 # export GRB_LICENSE_FILE=/home/dlwoodruff/software/gurobi950/licenses/c2/gurobi.lic
 
-mpiexec -np ${SLURM_NTASKS} python simulate_experiments.py farmer.json
+mpiexec -np ${SLURM_NTASKS} python simulate_experiments.py farmer.json experiments.json
 
 # remember stdout is buffered both by Python and by slurm

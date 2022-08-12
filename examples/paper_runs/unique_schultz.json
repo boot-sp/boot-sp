@@ -4,13 +4,13 @@
     "candidate_sample_size": 1,
     "sample_size": 75,
     "subsample_size": 10,
-    "nB": 100,
+    "nB": 50,
     "alpha": 0.05,
     "seed_offset" :100,
     "optimal_fname": "unique_schultz_optimal.npy",
     "xhat_fname": "unique_schultz_xhat.npy",
     "solver_name": "gurobi_direct",
-    "boot_method": "Classical_gaussian",
-    "trace_fname" : "None",
-    "coverage_replications": 100
+    "boot_method": "Classical_quantile",
+    "trace_fname" : "unique_schultz_trace.txt",
+    "coverage_replications": 10
 }
