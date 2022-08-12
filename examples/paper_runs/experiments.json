@@ -1,0 +1,15 @@
+{
+    "problem_sizelist" : {"unique_schultz": [40, 80],
+                        "nonunique_schultz": [40,80],
+                        "cvar": [300, 600],
+                        "farmer": [30, 60]
+                        },
+    "nB_list" : [100, 1000],
+    "method_kfac" : {"Classical_gaussian" : [0],
+                    "Classical_quantile" : [0],
+                    "Bagging_with_replacement": [0.4, 0.6, 0.8],
+                    "Bagging_without_replacement": [0.4, 0.6, 0.8],
+                    "Subsampling": [0.4, 0.6, 0.8],
+                    "Extended": [0]
+                }
+}

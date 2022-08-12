@@ -1,4 +1,4 @@
-# A driver for boot_sp to be used by users
+# A driver for boot_sp for command-line users
 
 import sys
 import numpy as np

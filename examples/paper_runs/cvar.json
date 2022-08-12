@@ -12,5 +12,5 @@
     "solver_name": "cplex_direct",
     "boot_method": "Bagging_with_replacement",
     "trace_fname" : "None",
-    "coverage_replications": 10
+    "coverage_replications": 100
 }

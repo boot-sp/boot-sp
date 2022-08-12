@@ -1,6 +1,7 @@
 import sys
 import time
 import numpy as np
+import json
 import mpisppy.utils.config as config
 import mpisppy.confidence_intervals.ciutils as ciutils
 import bootsp.boot_utils as boot_utils
@@ -19,9 +20,9 @@ my_rank = MPI.COMM_WORLD.Get_rank()
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("need json file")
-        print("usage, e.g.: python simulate_experiments.py schultz.json")
+    if len(sys.argv) != 3:
+        print("need 2 json files")
+        print("usage, e.g.: python simulate_experiments.py schultz.json experiments.json")
         quit()
 
     json_fname = sys.argv[1]
@@ -44,11 +45,20 @@ if __name__ == '__main__':
                    "Extended": [0]
                }
 
+
+    setup_fname = sys.argv[2]
+    with open(setup_fname, "r") as f:
+        options = json.load(f)
+    problem_sizelist = options["problem_sizelist"]
+    nB_list = options["nB_list"]
+    method_kfac = options["method_kfac"]
+  
     if my_rank == 0:
         append_name = cfg.module_name +"_table.tex"
         with open(append_name,  "w") as f:
             f.write("% "+cfg.module_name+"\n")
             f.write("\\begin{table}\n")
+            f.write("\\begin{centering}\n")
             f.write("\\begin{tabular}{||l|rrr|rr||}\n")
             f.write("\\hline\\hline\n")
             f.write("method & N & nB & k & avg len & coverage\\\\\n")
@@ -66,7 +76,8 @@ if __name__ == '__main__':
                     coverage, avg_len = simulate_boot.main_routine(cfg, module)
                     if my_rank == 0:
                         with open(append_name,  "a+") as f:
-                            f.write(cfg.boot_method+" & " )
+                            mtex = cfg.boot_method.replace("_","\\_")
+                            f.write(mtex+" & " )
                             f.write(f"{cfg.sample_size}"+" & ")
                             f.write(f"{cfg.nB}"+" & ")
                             f.write(f"{cfg.subsample_size}"+" & ")
@@ -76,7 +87,9 @@ if __name__ == '__main__':
     with open(append_name,  "a+") as f:
         f.write("\\hline\\hline\n")
         f.write("\\end{tabular}\n")
-        f.write(f"\\caption{{Results for {cfg.module_name} based on {cfg.coverage_replications} replications. \\label{{tab:{cfg.module_name}}} }}\n")
+        f.write("\\end{centering}\n")
+        mntex = cfg.module_name.replace("_","\\_")
+        f.write(f"\\caption{{Results for {mntex} with $\\alpha$={cfg.alpha} based on {cfg.coverage_replications} replications. \\label{{tab:{cfg.module_name}}} }}\n")
         f.write("\\end{table}\n")
 
     # print(f"--- {time.time()-start_time} seconds for rank {my_rank}")
