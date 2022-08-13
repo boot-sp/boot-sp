@@ -134,7 +134,7 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
                          "display_timing": False,
                          "solvername": cfg.solver_name,
                          "verbose": False,
-                         "no_toc": True
+                         "toc": False
                          }
 
     scenario_creator = scenario_creator_w_mapping
