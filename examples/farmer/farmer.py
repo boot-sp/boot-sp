@@ -289,7 +289,7 @@ def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=No
 
     Parameters
     ----------
-    scenario_names: int
+    scenario_names: list of str
         Names of the scenario we use
     solvername: str, optional
         Name of the solver used. The default is "gurobi".
