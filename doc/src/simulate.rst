@@ -12,18 +12,18 @@ The idea behind simulation mode is that a researcher has a problem
 with a known, or presumed, optimal solution. They may also have a
 candidate solution (xhat) that they have computed, but they could have
 it computed by the simulation software if their module has proper
-support (see `optional`_).
+support (see :ref:`optional`).
 
 The program can run from the command line and takes a json file for an instance as its argument (e.g. ``farmer.py``).
 However, it is mainly intended to be called in a loop from a script like ``simulate_experiments.py``
-(see `simulate_experiments`_).
+(see :ref:`simulate_experiments`).
 
 
 json file
 ---------
 
 The module name is given on the command line and the rest of the
-arguments are given in a json file as described in the `commands`_
+arguments are given in a json file as described in the :ref:`commands`
 section. An example of such a json file is
 ``boot-sp/paper_runs/famer.json``.
 
