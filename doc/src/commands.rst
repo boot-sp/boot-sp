@@ -60,7 +60,9 @@ some discusion. In the json format, all string values are quote delimited.
      
 * ``xhat_fname``, ``--xhat-fname``: When xhat (the estimated, or candidate) solution is computed by another program (which is common and recommended in simulation mode), this argument gives the name of an numpy file that has the solution as string such as "xhat.npy". If there is no file, the value should be the string "None".
 
-* ``candidate_sample_size``, ``--candidate-sample-size``: The ``boot-sp`` software can call a function in the module to generate an xhat solution (see the `optional`_ section). This argument provides the sample size. It corresponds to the paramater M given in the paper. It is given as an intger such as 25.  If the ``xhat_name`` argument is not "None", then ``candidate_sample_size`` is ignored.
+*     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written ``mpi-sppy` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.
+
+* ``candidate_sample_size``, ``--candidate-sample-size``: The ``boot-sp`` software can call a function in the module to generate an xhat solution (see the `optional`_ section). This argument provides the sample size. It corresponds to the paramater M given in the paper. It is given as an intger such as 25.  If the ``xhat_fname`` argument is not "None", then ``candidate_sample_size`` is ignored.
 
 *     ``sample_size``, ``--sample-size``: This value is the sample size used to for bootstrap or bagging. It corresponds to N in the paper and is given as an integer such as 75.  
 
@@ -72,9 +74,11 @@ some discusion. In the json format, all string values are quote delimited.
 
 *     ``seed_offset``, ``--seed-offset`` : This option is provided so that modelers who want to enable replication with difference seeds can do so. For some instances it can be used to assure independence between the psuedo-random number streams used to compute xhat and those used for confidence interval estimation. It is given as an integer. Unless you have a reason to do otherwise, just use 0, or, in user-mode, don't supply it.
 
-*     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written ``mpi-sppy` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.
-
 *     ``solver_name``, ``--solver-name``: The name of the solver to be used given as a string such as "gurobi_direct".
+
+*      ``trace_fname``, n/a: This is usually "None", but if it is not none the named file is opened in append mode and information about the simulation is written. Since the file is opned to append, it must already exist.
+
+*       ``coverage_replications``, n/a: For simulations, this controls the number of replications used to computed coverage. It is an integer, e.g. 100.
 
 *     ``boot_method``, ``--boot-method``: The method given as a string. Here are the choices (underscores in the string tokens are used in user and simulation mode):
 
@@ -91,6 +95,8 @@ some discusion. In the json format, all string values are quote delimited.
     - "Bagging_without_replacement": Bagging without replacement [lam2018assessing]_
 
 
+In addition to these arguments, there may be problem-specific arguments (e.g. "crops_multiplier" for
+the scalable farmer problem).
 
 Farmer Examples
 ---------------
