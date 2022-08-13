@@ -269,30 +269,6 @@ def kw_creator(cfg):
               }
     return kwargs
 
-def sample_tree_scen_creator(sname, stage, sample_branching_factors, seed,
-                             given_scenario=None, **scenario_creator_kwargs):
-    """ Create a scenario within a sample tree. Mainly for multi-stage and simple for two-stage.
-        (this function supports zhat and confidence interval code)
-    Args:
-        sname (string): scenario name to be created
-        stage (int >=1 ): for stages > 1, fix data based on sname in earlier stages
-        sample_branching_factors (list of ints): branching factors for the sample tree
-        seed (int): To allow random sampling (for some problems, it might be scenario offset)
-        given_scenario (Pyomo concrete model): if not None, use this to get data for ealier stages
-        scenario_creator_kwargs (dict): keyword args for the standard scenario creator funcion
-    Returns:
-        scenario (Pyomo concrete model): A scenario for sname with data in stages < stage determined
-                                         by the arguments
-    """
-    # Since this is a two-stage problem, we don't have to do much.
-    sca = scenario_creator_kwargs.copy()
-    sca["seedoffset"] = seed
-    sca["num_scens"] = sample_branching_factors[0]  # two-stage problem
-    return scenario_creator(sname, **sca)
-
-
-# end functions not needed by farmer_cylinders
-
 
 #============================
 def scenario_denouement(rank, scenario_name, scenario):
@@ -313,7 +289,7 @@ def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=No
 
     Parameters
     ----------
-    scenario_names: int
+    scenario_names: list of str
         Names of the scenario we use
     solvername: str, optional
         Name of the solver used. The default is "gurobi".

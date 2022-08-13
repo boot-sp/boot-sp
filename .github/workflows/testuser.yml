@@ -1,6 +1,6 @@
-# simulate
+# user
 
-name: simulate_boot tests
+name: user_boot tests
 
 on:
   push:

@@ -62,11 +62,9 @@ cplex, use
 
    $ pip install cplex
 
-However, you can use other solvers by editing the file `boot-sp/examples/farmer.bash` to replace `glpk` with a different solver name and xxxxxxxxxx simulation
+However, you can use other solvers by editing the file `boot-sp/examples/farmer.bash` to replace `cplex` with a different solver name that
+has been installed.
    
-
-User mode
-^^^^^^^^^
 
 Connect to the `boot-sp\examples directory and give the terminal command:
 
@@ -75,13 +73,4 @@ Connect to the `boot-sp\examples directory and give the terminal command:
    $ bash farmer.bash
 
 to see the program user-mode program execute for the ``farmer`` problem [birge2011]_.
-
-Simulation mode
-^^^^^^^^^^^^^^^
-
-To see simulation mode for the ``schultz`` problem, give the terminal command
-
-.. code-block:: bash
-
-   $ bash schultz.bash
 
