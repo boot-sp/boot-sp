@@ -21,7 +21,7 @@ The command for user mode is
 where ``module`` is the name of a Python module (without `.py`, even
 though the filen name itself has `'py`) such as farmer that contains a
 scenario creator with helper functions and ``arguments`` is list of
-double-dash-intiated `Arguments`_.
+double-dash-intiated :ref:`Arguments`.
 names, usually with an argument value
 such as ``--solver-name cplex``. A fairly long list of arguments is
 required in user mode, which is why most users put their command lines
@@ -37,7 +37,7 @@ The command for simulation mode is
 
    $ python -m bootsp.simulate_boot filename
 
-where ``filename`` is the name of a Python such as `farmer.json` that contains a full `Arguments`_ set for the simulation.
+where ``filename`` is the name of a Python such as `farmer.json` that contains a full :ref:`Arguments` set for the simulation.
 
 .. _Arguments:
 
@@ -62,7 +62,7 @@ some discusion. In the json format, all string values are quote delimited.
 
 *     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written ``mpi-sppy` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.
 
-* ``candidate_sample_size``, ``--candidate-sample-size``: The ``boot-sp`` software can call a function in the module to generate an xhat solution (see the `optional`_ section). This argument provides the sample size. It corresponds to the paramater M given in the paper. It is given as an intger such as 25.  If the ``xhat_fname`` argument is not "None", then ``candidate_sample_size`` is ignored.
+* ``candidate_sample_size``, ``--candidate-sample-size``: The ``boot-sp`` software can call a function in the module to generate an xhat solution (see the :ref:`optional` section). This argument provides the sample size. It corresponds to the paramater M given in the paper. It is given as an intger such as 25.  If the ``xhat_fname`` argument is not "None", then ``candidate_sample_size`` is ignored.
 
 *     ``sample_size``, ``--sample-size``: This value is the sample size used to for bootstrap or bagging. It corresponds to N in the paper and is given as an integer such as 75.  
 
