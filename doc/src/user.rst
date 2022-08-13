@@ -21,3 +21,21 @@ It will be called in user mode if the command line includes
 for xhat, the `xhat_generator` function is not called.
 
 The file ``boot-sp\examples\farmer.bash`` contains examples of user command lines.
+
+help
+^^^^
+
+To see the list of commands for any particular module, give the command:
+
+.. code-block:: bash
+
+    $ python -m bootsp.user_boot Y --help
+
+where Y is replaced by the module name. For example, if you cd to ``boot-sp/examples/farmer`` you can try
+
+.. code-block:: bash
+
+    $ python -m bootsp.user_boot Y --help
+
+Note that you can give ``--known-optimal`` to the user_boot command line, but it won't do anything with it. In future releases, this
+extraneous option will probably be removed.

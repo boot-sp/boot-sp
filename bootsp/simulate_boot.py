@@ -14,7 +14,16 @@ my_rank = MPI.COMM_WORLD.Get_rank()
 
 
 def main_routine(cfg, module):
-
+    """ The top level of simulate_boot; called by __main__
+        and by drivers such as simulate_experiments.py
+    Args:
+        cfg (Config): paramaters
+        module (Python module): contains the scenario creator function and helpers        
+    Returns:
+        coverage_rate (float): the coverage detected in the simulations
+        average_length (float): the average width of the interval around z*
+    """
+    
     start_time = time.time()
 
     if my_rank == 0:
@@ -80,20 +89,10 @@ def main_routine(cfg, module):
     else:
         return None, None
 
-
-
-        # file_name = cfg.module_name +"_sample_" + str(cfg.sample_size)+ "_nB_" + str(cfg.nB) + ".txt"
-        # with open(file_name,  "a+") as f:
-        #     f.write(f"seed from {seed_list[0]} - {seed_list[-1]}")
-        #     f.write(f"coverage: {coverage/len(seed_list)}")
-
-        
-    
-
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("need json file")
-        print("usage, e.g.: python boot_sp.py bfarmer.json")
+        print("usage, e.g.: python -m bootsp.simulate_boot farmer.json")
         quit()
 
     json_fname = sys.argv[1]
@@ -107,5 +106,5 @@ if __name__ == '__main__':
     if my_rank == 0:
         print("Coverage", coverage)
     # print(f"--- {time.time()-start_time} seconds for rank {my_rank}")
-    # compare_dist()
+
 

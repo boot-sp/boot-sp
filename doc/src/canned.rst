@@ -29,14 +29,28 @@ number of CPUs on your computer.  These simulations are intended to be
 run with MPI and take a lot of computing.  The slurm scripts are
 designed to do all the simulations for one table in the paper.
 
+.. _simulate_experiments.py:
+
 ``simulate_experiments.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This Python program reads to json files that control the experiments that
+This Python program in ``paper_runs`` reads two json files that control the experiments that
 are run for the paper that describes this software. It also serves
 as a starting point to copy if you want to create your own simulation
-program.
+program. Note that the definitions of N, nB, and k are in the paper.
 
 The first json file is for the problem instance (e.g. ``farmer.json``) and
 the second json program provides the values that will override the options
 in the first file to form the experiments; the ``experiments.json`` file is an example.
+
+The second json (e.g. ``experiments.json``) has three things:
+
+* ``problem_sizelist``: This is a dictionary with a key for each problem definition module you want to run (e.g. ``unique_schultz``) and list of N values for that problem. The program ``simulate_experiments.py`` will assume that there is a module with that name (e.g., ``unique_shultz.py`` in the current directory). The program ``simulate_experiments.py``  will loop over the problems and for each, will loop over the values for N.
+
+* ``nB_list``:  For each problem definition module and for each value N, ``simulate_experiments.py`` will loop over this list of nB values.  If you copy ``simulate_experiments.py`` to create your own program, you might want to make this a dictionary of lists so nB can vary wiht the problem.
+
+* ``method_kfac``:  For each problem, each N, and each nB, each method that is a key for this dictionary will be simulated and for each of
+  those, the values in the list will be muplied by $N$ to get the value for k. For the bootstrap methods, k is ignored (in some sense, it
+  would be 1, but the value k is not used by the software).
+
+Note the the first json file (e.g. ``farmer.json``) gives the name of the file with the (presumed) optimal solution.

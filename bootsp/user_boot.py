@@ -13,6 +13,14 @@ my_rank = MPI.COMM_WORLD.Get_rank()
 
 
 def main_routine(cfg, module):
+    """ The top level of user_boot; called by __main__
+        and by drivers such as simulate_experiments.py
+    Args:
+        cfg (Config): paramaters
+        module (Python module): contains the scenario creator function and helpers        
+    Note:
+        prints confidence interval results to the terminal
+    """
 
     if cfg["xhat_fname"] is not None and cfg["xhat_fname"] != "None":
         xhat = ciutils.read_xhat(cfg["xhat_fname"])
@@ -35,7 +43,7 @@ def main_routine(cfg, module):
         raise ValueError(f"boot_method={cfg.boot_method} is not supported.")
 
     if my_rank == 0:
-    # print result    
+        # print result    
         print(f"ci for optimal function value: {ci_optimal}")
         print(f"ci for function value at xhat: {ci_upper}")
         print(f"ci for optimality gap: {ci_gap}")
@@ -44,7 +52,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("need module name")
         print("usage python boot_sp.py module --options")
-        print("usage (e.g.): python boot_sp.py little_schultz  --....")
+        print("usage (e.g.): python -m boosp.user_boot farmer.json  --help")
         print("   note: module name should not end it .py")
         quit()
 

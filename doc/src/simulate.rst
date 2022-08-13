@@ -15,7 +15,8 @@ it computed by the simulation software if their module has proper
 support (see `optional`_).
 
 The program can run from the command line and takes a json file for an instance as its argument (e.g. ``farmer.py``).
-However, it is mainly intended to be called in a loop from a script like ``simulate_experiments.py`` in 
+However, it is mainly intended to be called in a loop from a script like ``simulate_experiments.py``
+(see `simulate_experiments`_).
 
 
 json file

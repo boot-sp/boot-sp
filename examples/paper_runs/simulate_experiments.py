@@ -9,12 +9,7 @@ import bootsp.boot_sp as boot_sp
 import bootsp.simulate_boot as simulate_boot
 import datetime
 
-import mpisppy.utils.sputils as sputils
-print("Disabling tictoc output so there will be very little terminal output.")
-sputils.disable_tictoc_output()
-
-
-# We are using the mpi-sppy MPI wrapper to help windows users live without MPI.
+# TBD: we are using the mpi-sppy MPI wrapper to help windows users live without MPI.
 import mpisppy.MPI as MPI
 my_rank = MPI.COMM_WORLD.Get_rank()
 
@@ -22,30 +17,13 @@ my_rank = MPI.COMM_WORLD.Get_rank()
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("need 2 json files")
-        print("usage, e.g.: python simulate_experiments.py schultz.json experiments.json")
+        print("usage, e.g.: python simulate_experiments.py farmer.json experiments.json")
         quit()
 
     json_fname = sys.argv[1]
     cfg = boot_utils.cfg_from_json(json_fname)
     module = boot_utils.module_name_to_module(cfg.module_name)
     
-    sample_size_list = [40, 80]
-    problem_sizelist = {"unique_schultz": [40, 80],
-                        "nonunique_schultz": [40,80],
-                        "cvar": [50, 100],
-                        "farmer": [30, 60]
-                    }
-    
-    nB_list = [100, 500]
-    method_kfac = {"Classical_gaussian" : [0],
-                   "Classical_quantile" : [0],
-                   "Bagging_with_replacement": [0.4, 0.6, 0.8],
-                   "Bagging_without_replacement": [0.4, 0.6, 0.8],
-                   "Subsampling": [0.4, 0.6, 0.8],
-                   "Extended": [0]
-               }
-
-
     setup_fname = sys.argv[2]
     with open(setup_fname, "r") as f:
         options = json.load(f)
