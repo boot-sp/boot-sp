@@ -20,13 +20,16 @@ Installation
    
 #. cd to the directory where you want to put `boot-sp` and give these commands:
 
+   
 .. code-block:: bash
 
    $ git clone https://github.com/DLWoodruff/boot-sp.git
    $ cd boot-sp
    $ python setup.py develop
 
+   
 For parallel operation, you will need to install MPI as described in the next section.
+
 
 Quick Install
 -------------
@@ -66,7 +69,7 @@ However, you can use other solvers by editing the file `boot-sp/examples/farmer.
 has been installed.
    
 
-Connect to the `boot-sp\examples directory and give the terminal command:
+Connect to the `boot-sp\examples directory` and give the terminal command:
 
 .. code-block:: bash
 

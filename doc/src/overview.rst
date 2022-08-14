@@ -33,7 +33,7 @@ Basics
 ------
 
 The ``boot-sp`` software relies on a ``Pyomo`` model to define the underlying problem (i.e., a deterministic scenario) and relies
-on ``mpi-sppy` for some low level functions. Both of these packages must be installed.
+on ``mpi-sppy`` for some low level functions. Both of these packages must be installed.
 
 The ``boot-sp`` software has two modes: ``simulation`` mode for researchers and ``user`` mode for modelers and end-users who have
 data and a problem and want, or have, a solution and want confidence intervals.

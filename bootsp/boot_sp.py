@@ -13,7 +13,8 @@ my_rank = MPI.COMM_WORLD.Get_rank()
 comm = MPI.COMM_WORLD
 rankcomm = comm.Split(key=my_rank, color=my_rank)  # single rank comm
 
-def scenario_creator_w_mapping(scenario_name, module=None, mapping=None, **kwargs):
+
+def _scenario_creator_w_mapping(scenario_name, module=None, mapping=None, **kwargs):
     """ A wrapper to allow for bootstrap samples to map to actual samples
     Args:
         scenario_name (str): the scenario number will be peeled off the end
@@ -87,7 +88,7 @@ def solve_routine(cfg, module, scenarios, num_threads=None, duplication = False)
     """
 
     tee_rank0_solves = False
-    scenario_creator = scenario_creator_w_mapping
+    scenario_creator = _scenario_creator_w_mapping
     scenario_creator_kwargs = module.kw_creator(cfg)  # we get a new one every time...
     scenario_creator_kwargs['module'] = module  # we are going to call a wrapper
 
@@ -118,14 +119,16 @@ def solve_routine(cfg, module, scenarios, num_threads=None, duplication = False)
 
 def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
     """ evaluate a given xhat over given scenario names
+
     Args:
         cfg (Config): paramaters
         module (Python module): contains the scenario creator function and helpers
         xhat (dict): keys are scenario tree node names (e.g. ROOT) and values are mpi-sppy nonant vectors
-                     (i.e. the specification of a candidate solution)
+            (i.e. the specification of a candidate solution)
         scenario_names (list of str): the scenario number will be peeled off the ends
         sample_mapping (dict): If not None, maps the scenario_name argument to a scenario sent to
-                        the module scenario creator
+            the module scenario creator
+
     Returns:
         zhat (float): the computed expected value
     """
@@ -137,7 +140,7 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
                          "toc": False
                          }
 
-    scenario_creator = scenario_creator_w_mapping
+    scenario_creator = _scenario_creator_w_mapping
     scenario_creator_kwargs = module.kw_creator(cfg)  # we get a new one every time...
     scenario_creator_kwargs['module'] = module  # we are going to call a wrapper
     scenario_creator_kwargs["mapping"] = sample_mapping            
@@ -163,13 +166,15 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
 
 def evaluate_scenarios(cfg, module, scenarios, xhat, duplication = True):
     """ evaluate xhat using a list of (sampled) scenario numbers
+
     Args:
         cfg (Config): paramaters
         module (Python module): contains the scenario creator function and helpers
         scenarios (iterable; e.g., list): scenario numbers
         xhat (dict): keys are scenario tree node names (e.g. ROOT) and values are mpi-sppy nonant vectors
-                     (i.e. the specification of a candidate solution)
+            (i.e. the specification of a candidate solution)
         duplication (bool): indicates scenarios may be duplicated in the scenarios list
+
     Returns:
         zhat (float): the computed expectation
     
@@ -188,7 +193,7 @@ def evaluate_scenarios(cfg, module, scenarios, xhat, duplication = True):
     return evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping)
 
 
-def bootstrap_resample(cfg, module, scenario_pool, xhat, serial=False):
+def _bootstrap_resample(cfg, module, scenario_pool, xhat, serial=False):
     """ Get gaps and optimal values for classic bootstrap.
     Args:
         cfg (Config): paramaters
@@ -227,12 +232,14 @@ def bootstrap_resample(cfg, module, scenario_pool, xhat, serial=False):
 
 def classical_bootstrap(cfg, module, xhat, quantile = True):
     """ perform a classic boostrap estimation of confidence intervals
+
     Args:
         cfg (Config): paramaters
         module (Python module): contains the scenario creator function and helpers
         xhat (dict): keys are scenario tree node names (e.g. ROOT) and values are mpi-sppy nonant vectors
                      (i.e. the specification of a candidate solution)
         serial (bool): indicates that only one MPI rank should be used
+
     Returns:
         tuple with confidence interval if on MPI rank 0
 
@@ -250,7 +257,7 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
     comm.Barrier()
 
     # bootstrap from pool
-    local_boot_gaps, local_boot_optimals, local_boot_uppers = bootstrap_resample(cfg, module, scenario_pool, xhat, serial = False)
+    local_boot_gaps, local_boot_optimals, local_boot_uppers = _bootstrap_resample(cfg, module, scenario_pool, xhat, serial = False)
 
     comm.Barrier()
 
@@ -297,7 +304,8 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
     else:
         return None, None, None
 
-def sub_resample(cfg, module, scenario_pool, xhat, serial=False):
+
+def _sub_resample(cfg, module, scenario_pool, xhat, serial=False):
     """ Get gaps and optimal values for subsampling method.
     Args:
         cfg (Config): paramaters
@@ -337,12 +345,14 @@ def sub_resample(cfg, module, scenario_pool, xhat, serial=False):
 
 def subsampling(cfg, module, xhat):
     """ perform a subsampling estimation of confidence intervals
+
     Args:
         cfg (Config): paramaters
         module (Python module): contains the scenario creator function and helpers
         xhat (dict): keys are scenario tree node names (e.g. ROOT) and values are mpi-sppy nonant vectors
-                     (i.e. the specification of a candidate solution)
+            (i.e. the specification of a candidate solution)
         serial (bool): indicates that only one MPI rank should be used
+
     Returns:
         tuple with confidence interval if on MPI rank 0
 
@@ -359,7 +369,7 @@ def subsampling(cfg, module, xhat):
     comm.Barrier()
 
     # subsampling from pool
-    local_boot_gaps, local_boot_optimals, local_boot_uppers = sub_resample(cfg, module, scenario_pool, xhat, serial = False)
+    local_boot_gaps, local_boot_optimals, local_boot_uppers = _sub_resample(cfg, module, scenario_pool, xhat, serial = False)
     #print(f"rank {my_rank} at pool barrier", flush=True)
     comm.Barrier()
 
@@ -396,7 +406,7 @@ def subsampling(cfg, module, xhat):
     else:
         return None, None, None
 
-def extended_resample(cfg, module, xhat, serial=False ):
+def _extended_resample(cfg, module, xhat, serial=False ):
     """ Get gaps and optimal values differences for extended bootstrap.
     Args:
         cfg (Config): paramaters
@@ -441,12 +451,14 @@ def extended_resample(cfg, module, xhat, serial=False ):
 
 def extended_bootstrap(cfg, module, xhat):
     """ perform an extended boostrap estimation of confidence intervals
+
     Args:
         cfg (Config): paramaters
         module (Python module): contains the scenario creator function and helpers
         xhat (dict): keys are scenario tree node names (e.g. ROOT) and values are mpi-sppy nonant vectors
-                     (i.e. the specification of a candidate solution)
+            (i.e. the specification of a candidate solution)
         serial (bool): indicates that only one MPI rank should be used
+
     Returns:
         tuple with confidence interval if on MPI rank 0
 
@@ -454,7 +466,7 @@ def extended_bootstrap(cfg, module, xhat):
     rng = default_rng(cfg.seed_offset)
 
     # extended bootstrap
-    local_boot_gaps_diff, local_boot_optimals_diff, local_boot_uppers_diff = extended_resample(cfg, module, xhat, serial = False)
+    local_boot_gaps_diff, local_boot_optimals_diff, local_boot_uppers_diff = _extended_resample(cfg, module, xhat, serial = False)
     #print(f"rank {my_rank} at pool barrier", flush=True)
     comm.Barrier()
 
@@ -511,7 +523,7 @@ def extended_bootstrap(cfg, module, xhat):
         return None, None, None
 
 
-def bagging_resample(cfg, module, scenario_pool, xhat, serial=False, replacement = True):
+def _bagging_resample(cfg, module, scenario_pool, xhat, serial=False, replacement = True):
     """ Get gaps and optimal values differences for bagging.
     Args:
         cfg (Config): paramaters
@@ -557,12 +569,14 @@ def bagging_resample(cfg, module, scenario_pool, xhat, serial=False, replacement
 
 def bagging_bootstrap(cfg, module, xhat, replacement = True):
     """ perform a bagging-based estimation of confidence intervals
+
     Args:
         cfg (Config): paramaters
         module (Python module): contains the scenario creator function and helpers
         xhat (dict): keys are scenario tree node names (e.g. ROOT) and values are mpi-sppy nonant vectors
-                     (i.e. the specification of a candidate solution)
+            (i.e. the specification of a candidate solution)
         serial (bool): indicates that only one MPI rank should be used
+
     Returns:
         tuple with confidence interval if on MPI rank 0
     """
@@ -571,7 +585,7 @@ def bagging_bootstrap(cfg, module, xhat, replacement = True):
     scenario_pool = rng.choice(cfg.max_count, size=cfg.sample_size, replace=False) 
      
     # bootstrap from pool
-    local_boot_gaps, local_boot_optimals, local_boot_uppers, local_boot_counts = bagging_resample(cfg, module, scenario_pool, xhat, serial = False, replacement = replacement )
+    local_boot_gaps, local_boot_optimals, local_boot_uppers, local_boot_counts = _bagging_resample(cfg, module, scenario_pool, xhat, serial = False, replacement = replacement )
     #print(f"rank {my_rank} at pool barrier", flush=True)
     comm.Barrier()
 

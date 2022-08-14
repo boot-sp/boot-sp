@@ -16,7 +16,7 @@ support (see :ref:`optional`).
 
 The program can run from the command line and takes a json file for an instance as its argument (e.g. ``farmer.py``).
 However, it is mainly intended to be called in a loop from a script like ``simulate_experiments.py``
-(see :ref:`simulate_experiments`).
+(see :ref:`simulate_experiments.py`).
 
 
 json file

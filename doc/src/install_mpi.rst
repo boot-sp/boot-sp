@@ -20,8 +20,7 @@ To test your installation of MPI:
 
 * install mpi-sppy
 
-* cd to the directory where you installed mpi-sppy
-(it is called ``mpi-sppy``) and then give this command.
+* cd to the directory where you installed mpi-sppy (it is called ``mpi-sppy``) and then give this command.
 
 ``mpirun -n 2 python -m mpi4py mpi_one_sided_test.py``
 
