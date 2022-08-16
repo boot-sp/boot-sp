@@ -1,5 +1,5 @@
 {
-    "module_name": "farmer",
+    "module_name": "farmerfmult",
     "optimal_fname": "farmer5mult_optimal.npy",
     "xhat_fname": "farmer5mult_xhat.npy",
     "max_count": 1000, 
@@ -9,7 +9,7 @@
     "nB": 100,
     "alpha": 0.05,
     "seed_offset" : 0,
-    "solver_name": "cplex",
+    "solver_name": "gurobi_direct",
     "boot_method": "Bagging_with_replacement",
     "trace_fname" : "None",
     "coverage_replications": 400,

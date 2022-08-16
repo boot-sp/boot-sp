@@ -6,7 +6,7 @@ import mpisppy.utils.sputils as sputils
 import mpisppy.utils.xhat_eval as xhat_eval
 import mpisppy.confidence_intervals.ciutils as ciutils
 import pyomo.environ as pyo
-from mpi4py import MPI
+import mpisppy.MPI as MPI
 import bootsp.boot_utils as boot_utils
 import bootsp.boot_sp as boot_sp
 
