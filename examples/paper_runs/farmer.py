@@ -25,7 +25,7 @@ import mpisppy.utils.amalgamator as amalgamator
 farmerstream = np.random.RandomState()
 
 def scenario_creator(
-    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=1,
+    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=None,
         num_scens=None, seedoffset=0
 ):
     """ Create a scenario for the (scalable) farmer example.
@@ -40,7 +40,7 @@ def scenario_creator(
             pyo.minimize or pyo.maximize. Default is pyo.minimize.
         crops_multiplier (int, optional):
             Factor to control scaling. There will be three times this many
-            crops. Default is 1.
+            crops.
         num_scens (int, optional):
             Number of scenarios. We use it to compute _mpisppy_probability. 
             Default is None.
@@ -93,7 +93,7 @@ def scenario_creator(
     return model
 
 def pysp_instance_creation_callback(
-    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=1
+    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=None
 ):
     # long function to create the entire model
     # scenario_name is a string (e.g. AboveAverageScenario0)
@@ -263,8 +263,10 @@ def inparser_adder(cfg):
 #=========
 def kw_creator(cfg):
     # (for Amalgamator): linked to the scenario_creator and inparser_adder
+    if cfg.get('crops_multiplier', None) is None:
+        raise ValueError("crops_multipler must be in cfg for kw_creator")
     kwargs = {"use_integer": cfg.get('use_integer', False),
-              "crops_multiplier": cfg.get('crops_multiplier', 1),
+              "crops_multiplier": cfg.get('crops_multiplier', None),
               "num_scens" : cfg.get('num_scens', None),
               }
     return kwargs
@@ -282,7 +284,7 @@ def scenario_denouement(rank, scenario_name, scenario):
 
 
 #============================
-def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
+def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=None, crops_multiplier=None, use_integer=False):
     ''' Given scenario names and
     options, create the scenarios and compute the xhat that is minimizing the
     approximate problem associated with these scenarios.
@@ -296,14 +298,12 @@ def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=No
     solver_options: dict, optional
         Solving options. The default is None.
     crops_multiplier: int, optional
-        A parameter of the farmer model. The default is 1.
+        A parameter of the farmer model.
 
     Returns
     -------
     xhat: xhat object (dict containing a 'ROOT' key with a np.array)
         A generated xhat.
-
-    NOTE: this is here for testing during development.
 
     '''
     num_scens = len(scenario_names)
