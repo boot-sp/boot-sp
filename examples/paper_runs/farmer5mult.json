@@ -1,5 +1,5 @@
 {
-    "module_name": "farmerfmult",
+    "module_name": "farmer",
     "optimal_fname": "farmer5mult_optimal.npy",
     "xhat_fname": "farmer5mult_xhat.npy",
     "max_count": 1000, 
