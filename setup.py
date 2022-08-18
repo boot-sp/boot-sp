@@ -18,7 +18,7 @@ setup(
     name='boot-sp',
     version='0.1.dev0',
     description="boot-sp",
-    url='https://github.com/DLWoodruff/boot-sp',
+    url='https://github.com/boot-sp/boot-sp',
     author='David Woodruff',
     author_email='dlwoodruff@ucdavis.edu',
     packages=packages,
