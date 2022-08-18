@@ -2,6 +2,10 @@
 
 Data-based, two-stage stochastic programming using bootstrap and bagging for confidence intervals.
 
+## Documentation
+
+There is documentation on [readthedocs](https://boot-sp.readthedocs.io/en/latest/) and a paper on [Optimization Online](https://optimization-online.org/2022/08/software-for-data-based-stochastic-programming-using-bootstrap-estimation/)
+
 ## internal tests
 
 ![simulate](https://github.com/DLWoodruff/boot-sp/actions/workflows/testsimulate.yml/badge.svg)
