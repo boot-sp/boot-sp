@@ -8,5 +8,5 @@ There is documentation on [readthedocs](https://boot-sp.readthedocs.io/en/latest
 
 ## internal tests
 
-![simulate](https://github.com/DLWoodruff/boot-sp/actions/workflows/testsimulate.yml/badge.svg)
-![user](https://github.com/DLWoodruff/boot-sp/actions/workflows/testuser.yml/badge.svg)
+![simulate](https://github.com/boot-sp/boot-sp/actions/workflows/testsimulate.yml/badge.svg)
+![user](https://github.com/boot-sp/boot-sp/actions/workflows/testuser.yml/badge.svg)
