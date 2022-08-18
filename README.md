@@ -1,6 +1,6 @@
 # boot-sp
 
-Data-based stochastic programming using bootstrap for confidence intervals.
+Data-based stochastic programming using bootstrap and bagging for confidence intervals.
 
 ## internal tests
 
