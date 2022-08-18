@@ -10,7 +10,7 @@ Installation
 
 #. Verify that a Python version 3.8 or higher is installed.
 
-#. Verify that `git <https://github.com/>` is installed 
+#. Verify that `git <https://github.com/>`_ is installed 
 
 #. Install a solver such as ```cplex``, ``glpk``, ``gurobi``, ``ipopt`` or etc. so that is can be run from the command line.
 

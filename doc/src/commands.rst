@@ -60,7 +60,7 @@ some discusion. In the json format, all string values are quote delimited.
      
 * ``xhat_fname``, ``--xhat-fname``: When xhat (the estimated, or candidate) solution is computed by another program (which is common and recommended in simulation mode), this argument gives the name of an numpy file that has the solution as string such as "xhat.npy". If there is no file, the value should be the string "None".
 
-*     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written ``mpi-sppy` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.
+*     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written by ``mpi-sppy`` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.
 
 * ``candidate_sample_size``, ``--candidate-sample-size``: The ``boot-sp`` software can call a function in the module to generate an xhat solution (see the :ref:`optional` section). This argument provides the sample size. It corresponds to the paramater M given in the paper. It is given as an intger such as 25.  If the ``xhat_fname`` argument is not "None", then ``candidate_sample_size`` is ignored.
 
