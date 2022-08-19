@@ -16,14 +16,14 @@ Installation
 
 #. Install `Pyomo <http://www.pyomo.org/>`_.
 
-#. Install `mpi-sppy <https://github.com/Pyomo/mpi-sppy>`_.
+#. Install `mpi-sppy <https://github.com/Pyomo/mpi-sppy>`_ using a github clone.
    
 #. cd to the directory where you want to put `boot-sp` and give these commands:
 
    
 .. code-block:: bash
 
-   $ git clone https://github.com/DLWoodruff/boot-sp.git
+   $ git clone https://github.com/boot-sp/boot-sp.git
    $ cd boot-sp
    $ python setup.py develop
 
@@ -47,7 +47,7 @@ install everytying else:
     $ cd mpi-sppy
     $ python setup.py develop
     $ cd ..
-    $ git clone https://github.com/DLWoodruff/boot-sp.git
+    $ git clone https://github.com/boot-sp/boot-sp.git
     $ cd boot-sp
     $ python setup.py develop
     $ cd ..
