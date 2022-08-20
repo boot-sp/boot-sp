@@ -68,6 +68,7 @@ def main_routine(cfg, module):
             # file_name = cfg.module_name +"_sample_" + str(cfg.sample_size)+ "_nB_" + str(cfg.nB) + ".txt"
             if cfg.trace_fname is not None:
                 with open(cfg.trace_fname,  "a+") as f:
+                    f.write(f"method: {cfg.boot_method}\n")
                     f.write(f"seed: {seed}\n")
                     f.write(f"optimal function value z^*: {opt_obj}\n")
                     f.write(f"ci for optimal function value z^*: {ci_optimal}\n")

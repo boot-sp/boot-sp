@@ -75,10 +75,15 @@ class Test_simulate(unittest.TestCase):
         ret_dict = dict()
         json_fname = self._json_path(dirname, module_name)
         cfg = boot_utils.cfg_from_json(json_fname)
+
+        cfg.coverage_replications = 10
+        cfg.seed_offset = 0
         cfg.solver_name = solvername
+        cfg.quick_assign("trace_fname", str, "_test_simuluate.app")
         module = boot_utils.module_name_to_module(cfg.module_name)
         for method in methods:
             print(f"Trying {method} for {module_name}")
+            print(f"{cfg.seed_offset =}")
             # These are *not* good parameters for real use...
             cfg.boot_method = method
             cfg.sample_size = 40
@@ -90,8 +95,21 @@ class Test_simulate(unittest.TestCase):
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
+    @unittest.skip("solver is not deterministic for cvar")
     def test_cvar(self):
         results = self._do_one("cvar", "cvar")
+        print(f"cvar {results =}")
+        
+        
+    @unittest.skipIf(not solver_available,
+                     "no solver is available")
+    def test_unique_schultz(self):
+        results = self._do_one("schultz", "unique_schultz")
+        print(f"unique_schultz {results =}")
+        assert "0.9, 8.7" in str(results["Classical_gaussian"]), "failure on Classical_gaussian"
+        assert "0.9, 7.0" in str(results["Classical_quantile"]), "failure on Classical_quantile"
+        assert "1.0, 14.6" in str(results["Bagging_with_replacement"]), "failure on Bagging_with_replacement"
+
 
 if __name__ == '__main__':
     unittest.main()
