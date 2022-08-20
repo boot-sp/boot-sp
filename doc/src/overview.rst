@@ -9,7 +9,7 @@ begin with the assumption that the uncertain data have a distribution
 that is known.  This software uses only sampled data to obtain both a
 consistent sample-average solution and a consistent estimate of
 confidence intervals for the optimality gap. The underlying
-distribution whence the samples come is not required.  See the paper on OOL
+distribution whence the samples come is not required.  See [ThePaper]_ on OOL
 for more details.
 
 At first, the software is expected mainly to be used by researchers
