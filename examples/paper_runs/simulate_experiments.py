@@ -36,10 +36,11 @@ if __name__ == '__main__':
         with open(append_name,  "w") as f:
             f.write("% "+cfg.module_name+"\n")
             f.write("\\begin{table}\n")
-            f.write("\\begin{centering}\n")
+            f.write("\\begin{center}\n")
             f.write("\\begin{tabular}{||l|rrr|rr||}\n")
             f.write("\\hline\\hline\n")
             f.write("method & N & nB & k & avg len & coverage\\\\\n")
+            f.write("\\hline\\hline\n")
 
     for method, kmultlist in method_kfac.items():
         cfg.boot_method = method
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     with open(append_name,  "a+") as f:
         f.write("\\hline\\hline\n")
         f.write("\\end{tabular}\n")
-        f.write("\\end{centering}\n")
+        f.write("\\end{center}\n")
         mntex = cfg.module_name.replace("_","\\_")
         f.write(f"\\caption{{Results for {mntex} with $\\alpha$={cfg.alpha} based on {cfg.coverage_replications} replications. \\label{{tab:{cfg.module_name}}} }}\n")
         f.write("\\end{table}\n")

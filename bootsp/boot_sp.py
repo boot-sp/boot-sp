@@ -252,8 +252,10 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
 
     dag_optimal = pyo.value(dag_ef.EF_Obj)
     dag_gap = dag_upper - dag_optimal # this is gamma(D) in the note
-    
-    #print(f"rank {my_rank} at dag barrier", flush=True)
+
+    # tron is a "secret" way to turn on internal trace information
+    if cfg.get("tron", False):
+        print(f"rank {my_rank} at dag barrier", flush=True)
     comm.Barrier()
 
     # bootstrap from pool
@@ -276,8 +278,8 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
     comm.Gatherv(sendbuf=local_boot_gaps, recvbuf=(boot_gaps, lenlist), root=0)
     comm.Gatherv(sendbuf=local_boot_optimals, recvbuf=(boot_optimals, lenlist), root=0)
     comm.Gatherv(sendbuf=local_boot_uppers, recvbuf=(boot_uppers, lenlist), root=0)
-    #if my_rank == 0:
-    #    print("*** rank 0 ends gather",flush=True)
+    if cfg.get("tron", False) and my_rank == 0:
+        print("*** rank 0 ends gather",flush=True)
 
     if my_rank == 0:
         alpha = cfg.alpha
@@ -333,8 +335,9 @@ def _sub_resample(cfg, module, scenario_pool, xhat, serial=False):
         scenarios = rng.choice(scenario_pool, size = cfg.subsample_size, replace = False)
         boot_ev = evaluate_scenarios(cfg, module, scenarios, xhat, duplication = True)
         boot_ef = solve_routine(cfg, module, scenarios, num_threads=2, duplication= True)
-        # print(f"using EF_obj: {pyo.value(boot_ef.EF_Obj)}")
-        # print(f"using evaluation:{evaluate_scenarios(scenarios, boot_ef, duplication = True):}")
+        if cfg.get("tron", False) and my_rank == 0:
+            print(f"_sub_resample using EF_obj: {pyo.value(boot_ef.EF_Obj)}")
+            print(f"   using evaluation:{evaluate_scenarios(scenarios, boot_ef, duplication = True):}")
         local_boot_optimals[iter] = pyo.value(boot_ef.EF_Obj)
         local_boot_uppers[iter] = boot_ev
         local_boot_gaps[iter] = local_boot_uppers[iter] - local_boot_optimals[iter]
@@ -633,9 +636,10 @@ def bagging_bootstrap(cfg, module, xhat, replacement = True):
             cov_optimal *= cfg.sample_size / (cfg.sample_size - cfg.subsample_size) 
             cov_upper *= cfg.sample_size / (cfg.sample_size - cfg.subsample_size) 
 
-        print(f"cov_gap:{cov_gap}")
-        print(f"cov_optimal: {cov_optimal}")
-        print(f"cov_upper: {cov_upper}")
+        if cfg.get("tron", False) and my_rank == 0:
+            print(f"cov_gap:{cov_gap}")
+            print(f"cov_optimal: {cov_optimal}")
+            print(f"cov_upper: {cov_upper}")
 
         dd = ss.norm.ppf(1-cfg.alpha)
         ci_optimal = [center_optimal - dd * cov_optimal, center_optimal + dd * cov_optimal]
