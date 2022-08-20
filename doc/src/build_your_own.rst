@@ -30,9 +30,9 @@ non-leaf tree node objects that are constructed by calling
 `scenario_tree.ScenarioNode` which is not very hard for two stage
 problems, because there is only one non-leaf node and it must be
 called "ROOT".  
-Node list entries can be entered indididually, by adding an entire
+Node list entries can be entered individually, by adding an entire
 variable implicitly including all index values, and/or by using wildcards. This is
-illustrated in the netdes example:
+illustrated in the ``mpi-sppy`` netdes example:
 
 ::
    

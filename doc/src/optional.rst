@@ -32,5 +32,5 @@ scenario_denouement
 -------------------
 
 This function, if present, is called by ``mpi-sppy`` for each scenario at termination and will usually not be called by ``boot-sp``. For most
-appliations, even in ``mpi-sppy`` the funciton simply contains `pass`.
+applications, even in ``mpi-sppy``, the function simply contains `pass`.
 

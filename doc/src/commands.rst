@@ -58,9 +58,9 @@ some discusion. In the json format, all string values are quote delimited.
 
 * ``module_name``, n/a: The name of of the python module that has the scenario creator and help functions given in the json file as a string such as "farmer". There is not command line argument name for this in user mode, where the module name is given as the first argument without an argument name.
      
-* ``xhat_fname``, ``--xhat-fname``: When xhat (the estimated, or candidate) solution is computed by another program (which is common and recommended in simulation mode), this argument gives the name of an numpy file that has the solution as string such as "xhat.npy". If there is no file, the value should be the string "None".
+* ``xhat_fname``, ``--xhat-fname``: When xhat (the estimated, or candidate) solution is computed by another program (which is common and recommended in simulation mode), this argument gives the name of an numpy file that has the solution as string such as "xhat.npy". If there is no file, the value should be the string "None". One way to create such a file is to use :ref:`boot_general_prep`
 
-*     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written by ``mpi-sppy`` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.
+*     ``optimal_fname``, n/a: This gives the file name for an optimal (or presumed optimal) solution in a format written by ``mpi-sppy`` code. The name is given as as a string such as "schultz_optimal.npy" and is ignored in user mode. If the name "None" is given, the software will compute an estimated global optimum using ``max_count`` scenarios.  One way to create such a file is to use :ref:`boot_general_prep`.
 
 * ``candidate_sample_size``, ``--candidate-sample-size``: The ``boot-sp`` software can call a function in the module to generate an xhat solution (see the :ref:`optional` section). This argument provides the sample size. It corresponds to the paramater M given in the paper. It is given as an intger such as 25.  If the ``xhat_fname`` argument is not "None", then ``candidate_sample_size`` is ignored.
 
@@ -70,7 +70,7 @@ some discusion. In the json format, all string values are quote delimited.
 
 *     ``nB``, ``--nB``: The number of subsamples to take. It is given as an intger such as 10.
 
-*     ``alpha``, ``--alpha``: 1-confidence level for the confidence intervals. It is given as a floating point number such as 0.05.
+*     ``alpha``, ``--alpha``: (1-confidence level)/2 for the confidence intervals. It is given as a floating point number such as 0.05 for 90\% confidence.
 
 *     ``seed_offset``, ``--seed-offset`` : This option is provided so that modelers who want to enable replication with difference seeds can do so. For some instances it can be used to assure independence between the psuedo-random number streams used to compute xhat and those used for confidence interval estimation. It is given as an integer. Unless you have a reason to do otherwise, just use 0, or, in user-mode, don't supply it.
 
@@ -102,13 +102,6 @@ Farmer Examples
 ---------------
 
 For these two examples, cd to ``boot-sp/examples/farmer``.
-
-simulate
-^^^^^^^^
-
-.. code-block:: bash
-
-   $ python -m bootsp.simulate_boot farmer.json
 
 simulate
 ^^^^^^^^
