@@ -27,8 +27,18 @@ arguments are given in a json file as described in the :ref:`commands`
 section. An example of such a json file is
 ``boot-sp/paper_runs/famer.json``.
 
+.. _boot_general_prep:
 
-general_prep.py
----------------
 
-This program prepares npy files used by simulations. It takes as its only argument a json file for an instance (e.g. ``farmer.json``)
+boot_general_prep
+-----------------
+
+The ``boot_general_prep.py`` program prepares two npy files used by simulations. It takes as its only argument a json file for an instance (e.g. ``farmer.json``)
+
+.. code-block:: bash
+
+   $ python -m bootsp.boot_general_prep farmer.json
+
+The program outputs one file with xhat and another with an assumed optimal
+create by solving the extensive form directly for ``max_count`` scenarios as
+specified in the json file.
