@@ -12,7 +12,7 @@ Installation
 
 #. Verify that `git <https://github.com/>`_ is installed 
 
-#. Install a solver such as ```cplex``, ``glpk``, ``gurobi``, ``ipopt`` or etc. so that is can be run from the command line.
+#. Install a solver such as ``cplex``, ``glpk``, ``gurobi``, ``ipopt`` or etc. so that is can be run from the command line.
 
 #. Install `Pyomo <http://www.pyomo.org/>`_.
 
