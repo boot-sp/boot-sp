@@ -19,7 +19,7 @@ The command for user mode is
    $ python -m bootsp.user_boot module arguments
 
 where ``module`` is the name of a Python module (without `.py`, even
-though the filen name itself has `'py`) such as farmer that contains a
+though the file name itself has `.py`) such as farmer that contains a
 scenario creator with helper functions and ``arguments`` is list of
 double-dash-intiated :ref:`Arguments`.
 names, usually with an argument value
