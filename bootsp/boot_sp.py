@@ -1,4 +1,5 @@
 # general-purpose bootstrap code
+import os
 import mpisppy.utils.sputils as sputils
 import mpisppy.utils.xhat_eval as xhat_eval
 import pyomo.environ as pyo
@@ -60,6 +61,9 @@ def process_optimal(cfg, module):
     """
 
     if cfg.optimal_fname is not None and cfg.optimal_fname != "None":
+        if not os.path.exists(cfg.optimal_fname):
+            raise ValueError(f"File {cfg.optimal_fname} does not exist.\n"
+                             "Maybe you need to run bootsp.boot_general_prep")
         print(f"Reading pre-computed optimal value from {cfg.optimal_fname}", flush=True)
         tmp = np.load(cfg["optimal_fname"], 'r')
         opt_obj = tmp[0]
