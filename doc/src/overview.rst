@@ -27,7 +27,7 @@ filled by one person, or multiple people):
 - *Modeler*: creates the Pyomo model and establishes the nature of the scenario tree.
 - *User*: runs a program to get the results of optimization under uncertainty along with confidence intervals.
 - *Researchers*: runs simulations to learn more about confidence interval methods.`
-- *Contributors to boot-sp*: the creators of, and contributors to, the mpi-sppy library.
+- *Contributors to boot-sp*: the creators of, and contributors to, ``boot-sp``.
 
 Basics
 ------

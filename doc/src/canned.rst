@@ -25,9 +25,11 @@ to remove (or alter) the conda activate line.
 
 If they are used as bash scripts, you will need to replace
 ``${SLURM_NTASKS}`` with a number. Use a number that is about half the
-number of CPUs on your computer.  These simulations are intended to be
-run with MPI and take a lot of computing.  The slurm scripts are
-designed to do all the simulations for one table in the paper.
+number of CPUs on your computer if you are using MPI.  If you are not
+using MPI, you will need to remove the mpiexec part of the command
+line entirely. These simulations are intended to be run with MPI and
+take a lot of computing.  The slurm scripts are designed to do all the
+simulations for one table in the paper.
 
 
 .. _simulate_experiments.py:
