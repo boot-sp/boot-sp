@@ -21,6 +21,7 @@ def find_optimal(cfg, module):
     opt_obj = pyo.value(opt_ef.EF_Obj)
     return opt_obj
 
+
 def find_candidate(cfg, module):
     scenarios = range(cfg.max_count - cfg.candidate_sample_size,  cfg.max_count)
     if len(scenarios) == 1:
@@ -29,6 +30,7 @@ def find_candidate(cfg, module):
 
     xhat = sputils.nonant_cache_from_ef(candidate_ef)
     return xhat
+
 
 def find_gap(cfg, module, xhat, opt_obj):
     obj_hat = boot_sp.evaluate_scenarios(cfg, module, range(cfg.max_count), xhat, duplication = False)
@@ -45,6 +47,8 @@ if __name__ == '__main__':
     json_fname = sys.argv[1]
     cfg = boot_utils.cfg_from_json(json_fname)
 
+    boot_utils.check_BFs(cfg)
+    
     module = boot_utils.module_name_to_module(cfg.module_name)
 
     xhat_fname = cfg["xhat_fname"]

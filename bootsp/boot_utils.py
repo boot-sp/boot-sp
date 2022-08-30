@@ -227,5 +227,12 @@ def compute_xhat(cfg, module):
     return xhat_k
 
 
+def check_BFs(cfg):
+    BFs = cfg.get("Branching_factors", [0])
+    if len(BFs) > 1:
+        raise ValueError("Only two-stage problems are presently supported.\n"
+                         f"branching_factors was {BFs}")
+    
+
 if __name__ == "__main__":
     print("boot_utils does not have a main program.")

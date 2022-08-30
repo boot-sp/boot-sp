@@ -98,6 +98,7 @@ if __name__ == '__main__':
 
     json_fname = sys.argv[1]
     cfg = boot_utils.cfg_from_json(json_fname)
+    boot_utils.check_BFs(cfg)
 
     module = boot_utils.module_name_to_module(cfg.module_name)
 
