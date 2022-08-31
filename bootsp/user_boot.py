@@ -58,6 +58,7 @@ if __name__ == '__main__':
 
     module_name = sys.argv[1]
     cfg = boot_utils.cfg_from_parse(module_name, name="user_boot")
+    boot_utils.check_BFs(cfg)
 
     module = boot_utils.module_name_to_module(cfg["module_name"])
 
