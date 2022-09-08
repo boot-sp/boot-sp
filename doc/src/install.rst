@@ -36,17 +36,14 @@ Quick Install
 
 This is not the recommend way to install, but if you are really in a
 hurry, you have Python version 3.8 or higher installed, and you have
-git installed, the following sequence of Unix shell commands might
+git installed, the following sequence of *nix shell commands might
 install everytying else:
 
 .. code-block:: bash
 
     $ pip install cplex
     $ pip install pyomo
-    $ git clone https://github.com/pyomo/mpi-sppy
-    $ cd mpi-sppy
-    $ python setup.py develop
-    $ cd ..
+    $ pip install mpi-sppy
     $ git clone https://github.com/boot-sp/boot-sp.git
     $ cd boot-sp
     $ python setup.py develop
