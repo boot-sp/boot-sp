@@ -139,7 +139,7 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
     xhat_eval_options = {"iter0_solver_options": None,
                          "iterk_solver_options": None,
                          "display_timing": False,
-                         "solvername": cfg.solver_name,
+                         "solver_name": cfg.solver_name,
                          "verbose": False,
                          "toc": False
                          }

@@ -19,7 +19,7 @@ sputils.disable_tictoc_output()
 
 from mpisppy.tests.utils import get_solver,round_pos_sig
 
-solver_available,solvername, persistent_available, persistentsolvername= get_solver()
+solver_available,solver_name, persistent_available, persistentsolver_name= get_solver()
 
 my_dir = os.path.dirname(os.path.abspath(__file__))
 main_example_path = os.path.join(my_dir,"..","..","examples")
@@ -78,7 +78,7 @@ class Test_simulate(unittest.TestCase):
 
         cfg.coverage_replications = 10
         cfg.seed_offset = 0
-        cfg.solver_name = solvername
+        cfg.solver_name = solver_name
         cfg.quick_assign("trace_fname", str, "_test_simuluate.app")
         module = boot_utils.module_name_to_module(cfg.module_name)
         for method in methods:

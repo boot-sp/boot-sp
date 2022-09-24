@@ -25,7 +25,7 @@ for the ``scenario_creator`` function. Here is the function signature for the fa
 
 .. code-block: python
    
-    def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
+    def xhat_generator_farmer(scenario_names, solver_name="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
 
 
 scenario_denouement

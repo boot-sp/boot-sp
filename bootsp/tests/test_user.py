@@ -18,7 +18,7 @@ import mpisppy.utils.sputils as sputils
 
 from mpisppy.tests.utils import get_solver,round_pos_sig
 
-solver_available,solvername, persistent_available, persistentsolvername= get_solver()
+solver_available,solver_name, persistent_available, persistentsolver_name= get_solver()
 
 my_dir = os.path.dirname(os.path.abspath(__file__))
 main_example_path = os.path.join(my_dir,"..","..","examples")
@@ -69,7 +69,7 @@ class Test_user(unittest.TestCase):
         return jpath
 
     
-    def _make_arglist(self, solvername):
+    def _make_arglist(self, solver_name):
         # many of these items will be overwritten (e.g., method)
         cmdlist = ["--max-count", "9999",
                    "--candidate-sample-size", "1",
@@ -79,7 +79,7 @@ class Test_user(unittest.TestCase):
                    "--alpha", "0.05",
                    "--seed-offset", "100",
                    "--xhat-fname", "cvar_xhat.npy",
-                   "--solver-name", solvername,
+                   "--solver-name", solver_name,
                    "--boot-method", methods[0]]
         return cmdlist
         
@@ -90,12 +90,12 @@ class Test_user(unittest.TestCase):
 
         cfg = boot_utils._process_module(module_name)
         parser = cfg.create_parser(f"test user {module_name}")
-        arglist = self._make_arglist(solvername)
+        arglist = self._make_arglist(solver_name)
         args = parser.parse_args(arglist)
         args = cfg.import_argparse(args)
         cfg.module_name = module_name
 
-        cfg.solver_name = solvername
+        cfg.solver_name = solver_name
         module = boot_utils.module_name_to_module(module_name)
         for method in methods:
             print(f"Trying {method} for {module_name}")
