@@ -218,12 +218,12 @@ def compute_xhat(cfg, module):
     xhat_scenario_names = module.scenario_names_creator(cfg.candidate_sample_size, start=cfg.sample_size)
     
     xgo = module.kw_creator(cfg)
-    xgo.pop("solvername", None)  # it will be given explicitly
+    xgo.pop("solver_name", None)  # it will be given explicitly
     ###xgo.pop("solver_options", None)  # it will be given explicitly
     xgo.pop("num_scens", None)
     xgo.pop("scenario_names", None)  # given explicitly
     xhat_fct = getattr(module, xhat_fct_name)
-    xhat_k = xhat_fct(xhat_scenario_names, solvername=cfg.solver_name, **xgo)
+    xhat_k = xhat_fct(xhat_scenario_names, solver_name=cfg.solver_name, **xgo)
     return xhat_k
 
 

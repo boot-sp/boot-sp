@@ -282,7 +282,7 @@ def scenario_denouement(rank, scenario_name, scenario):
 
 
 #============================
-def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
+def xhat_generator_farmer(scenario_names, solver_name="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
     ''' Given scenario names and
     options, create the scenarios and compute the xhat that is minimizing the
     approximate problem associated with these scenarios.
@@ -291,7 +291,7 @@ def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=No
     ----------
     scenario_names: list of str
         Names of the scenario we use
-    solvername: str, optional
+    solver_name: str, optional
         Name of the solver used. The default is "gurobi".
     solver_options: dict, optional
         Solving options. The default is None.
@@ -310,7 +310,7 @@ def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=No
     
     cfg = config.Config()
     cfg.quick_assign("EF_2stage", bool, True)
-    cfg.quick_assign("EF_solver_name", str, solvername)
+    cfg.quick_assign("EF_solver_name", str, solver_name)
     cfg.quick_assign("EF_solver_options", dict, solver_options)
     cfg.quick_assign("num_scens", int, num_scens)
     cfg.quick_assign("_mpisppy_probability", float, 1/num_scens)
