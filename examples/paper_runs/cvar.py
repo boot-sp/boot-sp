@@ -25,7 +25,7 @@ def scenario_creator(scenario_name, num_scens=None, seedoffset=0):
     scennum   = sputils.extract_num(scenario_name)
 
     sstream.seed(scennum+seedoffset)  # allows for resampling easily
-    xi = np.random.normal(0,1)
+    xi = sstream.random.normal(0,1)
     #print(f"{scenario_name}: {xi}")
     alpha = 0.1
 
