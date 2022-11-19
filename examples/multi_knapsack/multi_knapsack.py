@@ -1,11 +1,12 @@
 # DLW Nov 2022; Vaagen and Wallace, IJPR, 2007
 # (see also the chapter in the King/Wallace book)
+import json
+import numpy as np
 import pyomo.environ as pyo
 from mpisppy.utils import config
 import mpisppy.scenario_tree as scenario_tree
 import mpisppy.utils.sputils as sputils
-import numpy as np
-import json
+import mpisppy.utils.amalgamator as amalgamator
 
 # Use this random stream:
 sstream = np.random.RandomState(1)
@@ -46,16 +47,16 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0):
 
     # use the same variable names as in chapter 6 of the King/Wallace book
     # item numbers start at 1
-    model.I = pyo.RangeSet(detdata.num_prods)
+    model.I = pyo.RangeSet(detdata["num_prods"])
 
-    model.x = pyo.Var(model.I, within=NonNegativeReals)
-    model.y = pyo.Var(model.I, within=NonNegativeReals)
-    model.z = pyo.Var(model.I, model.I, within=NonNegativeReals, initialize=0)
-    model.zt = pyo.Var(model.I, within=NonNegativeReals)
-    model.w = pyo.Var(model.I, within=NonNegativeReals)
+    model.x = pyo.Var(model.I, within=pyo.NonNegativeReals)
+    model.y = pyo.Var(model.I, within=pyo.NonNegativeReals)
+    model.z = pyo.Var(model.I, model.I, within=pyo.NonNegativeReals, initialize=0)
+    model.zt = pyo.Var(model.I, within=pyo.NonNegativeReals)
+    model.w = pyo.Var(model.I, within=pyo.NonNegativeReals)
 
     # tbd: update this...xxxx
-    d = {i: int(detdata.mean_d*sstream.rand()/2) for i in model.I}
+    d = {i: int(detdata["mean_d"]*sstream.rand()/2) for i in model.I}
 
     # note: the json indexes are strings
     
@@ -120,7 +121,6 @@ def scenario_names_creator(num_scens,start=None):
 #=========
 def inparser_adder(cfg):
     # add options unique to the model
-    cfg.num_scens_required()
     cfg.add_to_config("deterministic_data_json",
                       description="file name for json file with determinstic data",
                       domain=str,
@@ -136,6 +136,48 @@ def kw_creator(cfg):
 #============================
 def scenario_denouement(rank, scenario_name, scenario):
     pass
+
+#============================
+def xhat_generator_multi_knapsack(scenario_names, solver_name=None,cfg=None):
+    ''' Given scenario names and
+    options, create the scenarios and compute the xhat that is minimizing the
+    approximate problem associated with these scenarios.
+
+    Parameters
+    ----------
+    scenario_names: list of str
+        Names of the scenario we use
+    cfg (Config): control parameters
+
+    Returns
+    -------
+    xhat: xhat object (dict containing a 'ROOT' key with a np.array)
+        A generated xhat.
+
+    NOTE: this is here for testing during development.
+
+    '''
+    num_scens = len(scenario_names)
+    
+    xhat_cfg = cfg()
+    xhat_cfg.quick_assign("num_scens", int, num_scens)
+    xhat_cfg.quick_assign("_mpisppy_probability", float, 1/num_scens)
+    xhat_cfg.quick_assign("EF_2stage", bool, True)
+    xhat_cfg.quick_assign("EF_solver_name", str, cfg.solver_name)
+
+    #We use from_module to build easily an Amalgamator object
+    ama = amalgamator.from_module("multi_knapsack",
+                                  xhat_cfg, use_command_line=False)
+    #Correcting the building by putting the right scenarios.
+    ama.scenario_names = scenario_names
+    ama.run()
+    
+    # get the xhat
+    xhat = sputils.nonant_cache_from_ef(ama.ef)
+
+    return xhat
+        
+
 
 if __name__ == "__main__":
     # main program just for developer testing (and therefore might not execute)
