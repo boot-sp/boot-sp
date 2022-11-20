@@ -1,4 +1,4 @@
-# DLW Nov 2022; Vaagen and Wallace, IJPR, 2007
+# DLW Nov 2022; Vaagen and Wallace, IJPE, 2007
 # (see also the chapter in the King/Wallace book)
 import json
 import numpy as np
@@ -11,7 +11,7 @@ import mpisppy.utils.amalgamator as amalgamator
 # Use this random stream:
 sstream = np.random.RandomState(1)
 
-def scenario_creator(scenario_name, cfg=None, seedoffset=0):
+def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     """ Create the CVaR examples using Schultz method we always use
     
     Args:
@@ -43,7 +43,7 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0):
     v = detdata["v"]
     c = detdata["c"]
     g = detdata["g"]
-    alpha = detdata["alpha"]
+    alpha = detdata["alpha"]  # a dict of lists
 
     # use the same variable names as in chapter 6 of the King/Wallace book
     # item numbers start at 1
@@ -65,14 +65,15 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0):
     model.d_constraint = pyo.Constraint(model.I, rule=d_rule)
 
     def z_rule(m,i,j):
+        # note that alpha is a dict of lists
         if i == j:
-            return pyo.Constraint.Skip()
+            return pyo.Constraint.Skip
         else:
-            return m.z[i,j] <= alpha[str(i)][str(j)] * (d[str(j)]-m.y[j])
+            return m.z[i,j] <= alpha[str(i)][j-1] * (d[j]-m.y[j])
     model.z_constraint = pyo.Constraint(model.I, model.I, rule=z_rule)
 
     def zt_rule(m, i):
-        return m.zt[i] == sum(m.z[i,j] for j in model.I if j != i) <= d[i]
+        return m.zt[i] == sum(m.z[i,j] for j in model.I if j != i)
     model.zt_constraint = pyo.Constraint(model.I, rule=zt_rule)
 
     def w_rule(m, i):
@@ -86,23 +87,11 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0):
 
     model.obj = pyo.Objective(expr=model.Obj1)
 
-    def excess_rule(m):
-        return m.nu >= xi - m.eta
-    model.excess_constraint = pyo.Constraint(rule=excess_rule)
-
     # Create the list of nodes associated with the scenario (for two stage,
     # there is only one node associated with the scenario--leaf nodes are
     # ignored).
-    model._mpisppy_node_list = [
-        scenario_tree.ScenarioNode(
-            name="ROOT",
-            cond_prob=1.0,
-            stage=1,
-            cost_expression=model.Obj1,
-            nonant_list=[model.x],
-            scen_model=model,
-        )
-    ]
+    varlist = [model.x]
+    sputils.attach_root_node(model, model.Obj1, varlist)
     
     #Add the probability of the scenario
     if num_scens is not None :
