@@ -49,11 +49,11 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     # item numbers start at 1
     model.I = pyo.RangeSet(detdata["num_prods"])
 
-    model.x = pyo.Var(model.I, within=pyo.NonNegativeReals)
-    model.y = pyo.Var(model.I, within=pyo.NonNegativeReals)
+    model.x = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
+    model.y = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
     model.z = pyo.Var(model.I, model.I, within=pyo.NonNegativeReals, initialize=0)
-    model.zt = pyo.Var(model.I, within=pyo.NonNegativeReals)
-    model.w = pyo.Var(model.I, within=pyo.NonNegativeReals)
+    model.zt = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
+    model.w = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
 
     # tbd: update this...xxxx
     d = {i: int(detdata["mean_d"]*sstream.rand()/2) for i in model.I}
