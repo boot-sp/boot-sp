@@ -1,5 +1,5 @@
 # DLW Nov 2022; Vaagen and Wallace, IJPE, 2007
-# (see also the chapter in the King/Wallace book)
+# The model version is from chapter 6 of the King/Wallace book.
 import json
 import numpy as np
 import pyomo.environ as pyo
@@ -55,8 +55,8 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     model.zt = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
     model.w = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
 
-    # tbd: update this...xxxx
-    d = {i: int(detdata["mean_d"]*sstream.rand()/2) for i in model.I}
+    # tbd: add correlation option
+    d = {i: int(sstream.normal(detdata["mean_d"][str(i)], detdata["stdev_d"][str(i)])) for i in model.I}
 
     # note: the json indexes are strings
     
@@ -85,7 +85,7 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
                                          + g[str(i)]*m.w[i]
                                          - c[str(i)]*m.x[i] for i in m.I))
 
-    model.obj = pyo.Objective(expr=model.Obj1)
+    model.obj = pyo.Objective(expr=model.Obj1, sense=pyo.maximize)
 
     # Create the list of nodes associated with the scenario (for two stage,
     # there is only one node associated with the scenario--leaf nodes are
