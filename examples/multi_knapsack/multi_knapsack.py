@@ -11,6 +11,17 @@ import mpisppy.utils.amalgamator as amalgamator
 # Use this random stream:
 sstream = np.random.RandomState(1)
 
+def _read_detdata(cfg):
+    # deterministic data
+    json_fname = cfg.deterministic_data_json
+    try:
+        with open(json_fname, "r") as read_file:
+            detdata = json.load(read_file)
+    except:
+        print(f"Could not read the json file: {json_fname}")
+        raise
+    return detdata
+
 def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     """ Create the CVaR examples using Schultz method we always use
     
@@ -32,14 +43,7 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     # Create the concrete model object
     model = pyo.ConcreteModel("multi-knapsack")
 
-    # deterministic data
-    json_fname = cfg.deterministic_data_json
-    try:
-        with open(json_fname, "r") as read_file:
-            detdata = json.load(read_file)
-    except:
-        print(f"Could not read the json file: {json_fname}")
-        raise
+    detdata = _read_detdata(cfg)
     v = detdata["v"]
     c = detdata["c"]
     g = detdata["g"]
@@ -174,10 +178,10 @@ if __name__ == "__main__":
     solver_name = "cplex"
     cfg = config.Config()
     inparser_adder(cfg)
-    cfg.parse_command_line("farmer_cylinders")
+    cfg.parse_command_line("multi-knapsack")
     # now, pretty much ignore the command line...
-    num_scens = 1
-    cfg["num_scens"] = num_scens
+    detdata = _read_detdata(cfg)
+    num_scens = 2
     scenario_names = scenario_names_creator(num_scens)
     scenario_creator_kwargs = kw_creator(cfg)
     
