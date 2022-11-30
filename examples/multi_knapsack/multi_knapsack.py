@@ -41,7 +41,7 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     sstream.seed(scennum+seedoffset)  # allows for resampling easily
 
     # Create the concrete model object
-    model = pyo.ConcreteModel("multi-knapsack")
+    model = pyo.ConcreteModel(f"multi-knapsack {scenario_name}")
 
     detdata = _read_detdata(cfg)
     v = detdata["v"]
