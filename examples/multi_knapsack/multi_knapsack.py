@@ -60,7 +60,7 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     model.w = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
 
     # tbd: add correlation option
-    d = {i: int(sstream.normal(detdata["mean_d"][str(i)], detdata["stdev_d"][str(i)])) for i in model.I}
+    d = {i: max(0, int(sstream.normal(detdata["mean_d"][str(i)], detdata["stdev_d"][str(i)]))) for i in model.I}
 
     # note: the json indexes are strings
     

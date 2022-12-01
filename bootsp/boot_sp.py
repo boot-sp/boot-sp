@@ -656,5 +656,5 @@ def bagging_bootstrap(cfg, module, xhat, replacement = True):
 
     
 if __name__ == "__main__":
-    print("boot_sp contains only function and is not directly runnable.")
-    print("Try, e.g., simulate_boot.py")
+    print("boot_sp contains only functions and is not directly runnable.")
+    print("Try, e.g., user_boot.py")
