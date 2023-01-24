@@ -7,7 +7,7 @@
     "sample_size": 75,
     "subsample_size": 10,
     "nB": 100,
-    "alpha": 0.05,
+    "alpha": 0.1,
     "seed_offset" : 0,
     "solver_name": "cplex",
     "boot_method": "Bagging_with_replacement",

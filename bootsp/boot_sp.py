@@ -286,15 +286,15 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
         print("*** rank 0 ends gather",flush=True)
 
     if my_rank == 0:
-        alpha = cfg.alpha
         if quantile:
+            alpha = cfg.alpha/2
             ci_optimal = np.quantile(2 * dag_optimal - boot_optimals, [alpha, 1-alpha])
 
             ci_upper = np.quantile(2 * dag_upper - boot_uppers, [alpha, 1-alpha])
 
             ci_gap = np.quantile(2 * dag_gap - boot_gaps, [alpha, 1-alpha])
         else:
-            dd = ss.norm.ppf(1-cfg.alpha)
+            dd = ss.norm.ppf(1-cfg.alpha/2)
             std_optimal = np.std(boot_optimals, ddof = 1)
             std_gap = np.std(boot_gaps, ddof = 1)
             std_upper = np.std(boot_uppers, ddof = 1)
@@ -399,7 +399,7 @@ def subsampling(cfg, module, xhat):
     #    print("*** rank 0 ends gather",flush=True)
 
     if my_rank == 0:
-        alpha = cfg.alpha
+        alpha = cfg.alpha/2
         err_optimal = np.sqrt(cfg.subsample_size / cfg.sample_size) * np.quantile(boot_optimals - dag_optimal,  [1- alpha, alpha])
         ci_optimal = dag_optimal - err_optimal
 
@@ -516,7 +516,7 @@ def extended_bootstrap(cfg, module, xhat):
         center_gap = center_upper - center_optimal
 
 
-        alpha = cfg.alpha
+        alpha = cfg.alpha/2
         ci_optimal = center_optimal - np.quantile(boot_optimals_diff, [1-alpha, alpha]) 
 
         ci_upper = center_upper - np.quantile(boot_uppers_diff, [1-alpha, alpha]) 
@@ -645,7 +645,7 @@ def bagging_bootstrap(cfg, module, xhat, replacement = True):
             print(f"cov_optimal: {cov_optimal}")
             print(f"cov_upper: {cov_upper}")
 
-        dd = ss.norm.ppf(1-cfg.alpha)
+        dd = ss.norm.ppf(1-cfg.alpha/2)
         ci_optimal = [center_optimal - dd * cov_optimal, center_optimal + dd * cov_optimal]
         ci_upper = [center_upper - dd * cov_upper, center_upper + dd * cov_upper]
         ci_gap = [center_gap - dd * cov_gap, center_gap + dd * cov_gap]

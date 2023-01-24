@@ -70,7 +70,7 @@ some discusion. In the json format, all string values are quote delimited.
 
 *     ``nB``, ``--nB``: The number of subsamples to take. It is given as an intger such as 10.
 
-*     ``alpha``, ``--alpha``: (1-confidence level)/2 for the confidence intervals. It is given as a floating point number such as 0.05 for 90\% confidence.
+*     ``alpha``, ``--alpha``: significance level for the confidence intervals. It is given as a floating point number such as 0.05 for 95\% confidence.
 
 *     ``seed_offset``, ``--seed-offset`` : This option is provided so that modelers who want to enable replication with difference seeds can do so. For some instances it can be used to assure independence between the psuedo-random number streams used to compute xhat and those used for confidence interval estimation. It is given as an integer. Unless you have a reason to do otherwise, just use 0, or, in user-mode, don't supply it.
 
