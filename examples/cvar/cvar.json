@@ -5,7 +5,7 @@
     "sample_size": 75,
     "subsample_size": 10,
     "nB": 10,
-    "alpha": 0.05,
+    "alpha": 0.1,
     "seed_offset" :100,
     "optimal_fname": "cvar_optimal.npy",
     "xhat_fname": "cvar_xhat.npy",
