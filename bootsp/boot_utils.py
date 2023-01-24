@@ -68,7 +68,7 @@ def cfg_for_boot():
                       domain=int,
                       default=None)
     cfg.add_to_config(name="alpha",
-                      description="1-confidence (e.g. 0.05)",
+                      description="significance level two-tailed (e.g. 0.05)",
                       domain=float,
                       default=None)
     cfg.add_to_config(name="seed_offset",
