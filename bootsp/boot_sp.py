@@ -102,7 +102,7 @@ def solve_routine(cfg, module, scenarios, num_threads=None, duplication = False)
     else:
         scenario_names = ['Scenario' + str(i) for i in scenarios]
         scenario_creator_kwargs['mapping'] = None
-    scenario_creator_kwargs["num_scens"] = len(scenario_names)
+    # scenario_creator_kwargs["num_scens"] = len(scenario_names)
 
     ef = sputils.create_EF(
         scenario_names,
@@ -148,7 +148,7 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
     scenario_creator_kwargs = module.kw_creator(cfg)  # we get a new one every time...
     scenario_creator_kwargs['module'] = module  # we are going to call a wrapper
     scenario_creator_kwargs["mapping"] = sample_mapping            
-    scenario_creator_kwargs["num_scens"] = len(scenario_names)
+    # scenario_creator_kwargs["num_scens"] = len(scenario_names)
 
     ev = xhat_eval.Xhat_Eval(xhat_eval_options,
                 scenario_names,

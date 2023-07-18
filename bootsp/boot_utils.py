@@ -101,6 +101,14 @@ def cfg_for_boot():
                       domain=int,
                       default=None,
                       argparse = False)
+    cfg.add_to_config(name="smoothed_B_I",
+                    description="number of initial fixed points to use in smoothed bagging.",
+                    domain=int,
+                    default=None)
+    cfg.add_to_config(name="smoothed_center_sample_size",
+                description="number of points to sample from the fitted distribution for the gap center.",
+                domain=int,
+                default=None)
     return cfg
 
 
@@ -152,6 +160,8 @@ def cfg_from_json(json_fname):
     # get every cfg index from the json
     for idx in cfg:
         if idx not in options:
+            if "smoothed" in idx and "smoothed" not in cfg.boot_method:
+                continue
             badtrip = True
             print(f"ERROR: {idx} not in the options read from {json_fname}")
             continue
