@@ -25,7 +25,7 @@ main_example_path = os.path.join(my_dir,"..","..","examples")
 if not os.path.exists(main_example_path):
     raise RuntimeError(f"Directory not found: {main_example_path}")
 
-methods = ["Classical_gaussian",
+methods_empirical = ["Classical_gaussian",
          "Classical_quantile",
          "Bagging_with_replacement",
          "Bagging_without_replacement",
@@ -80,10 +80,10 @@ class Test_user(unittest.TestCase):
                    "--seed-offset", "100",
                    "--xhat-fname", "cvar_xhat.npy",
                    "--solver-name", solver_name,
-                   "--boot-method", methods[0]]
+                   "--boot-method", methods_empirical[0]]
         return cmdlist
         
-    def _do_one(self, dirname, module_name):
+    def _do_empirical(self, dirname, module_name):
         # do the test, return a dictionary of return values
         ret_dict = dict()
         json_fname = self._json_path(dirname, module_name)
@@ -97,21 +97,21 @@ class Test_user(unittest.TestCase):
 
         cfg.solver_name = solver_name
         module = boot_utils.module_name_to_module(module_name)
-        for method in methods:
+        for method in methods_empirical:
             print(f"Trying {method} for {module_name}")
             # These are *not* good parameters for real use...
             cfg.boot_method = method
             cfg.sample_size = 40
             cfg.subsample_size = 20
             cfg.nB = 10
-            ret_dict[method] = user_boot.main_routine(cfg, module)
+            ret_dict[method] = user_boot.empirical_main_routine(cfg, module)
         return ret_dict
     
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
     def test_cvar(self):
-        results = self._do_one("cvar", "cvar")
+        results = self._do_empirical("cvar", "cvar")
 
 if __name__ == '__main__':
     unittest.main()
