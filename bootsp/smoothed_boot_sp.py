@@ -187,7 +187,7 @@ def smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', qua
 
         if not quantile:
             s_g = np.std(boot_gap, ddof = 1)
-            ppf = ss.norm.ppf(1-cfg.alpha)
+            ppf = ss.norm.ppf(1-cfg.alpha/2)
             error = s_g * ppf 
             ci_gap_two_sided =  [dag_gap - error, dag_gap + error]  
             # ci_gap_two_sided = [r["Gbar"] - error, r["Gbar"]+error]  
@@ -197,12 +197,12 @@ def smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', qua
             # eps = np.sqrt(Ssquare) * t_g * np.sqrt(cfg.MMW_batch_size/cfg.sample_size)
             # ci_gap_two_sided = [dag_gap - eps, dag_gap + eps]
         else:
-            alpha = cfg.alpha        
+            alpha = cfg.alpha/2        
  
             eps = np.quantile(boot_gap - dag_gap,  [alpha, 1-alpha]) 
             ci_gap_two_sided =  [dag_gap - eps[1], dag_gap-eps[0]]
         print(f"{ci_gap_two_sided = }")
-        return ci_gap_two_sided
+        return ci_gap_two_sided, dag_gap
     else:
         return None
 ################################################
@@ -275,12 +275,12 @@ def smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel', serial=F
         
         s1 = np.var(avg_gaps)
         s2 = np.var(all_gaps)
-        ppf = ss.norm.ppf(1-cfg.alpha)
+        ppf = ss.norm.ppf(1-cfg.alpha/2)
         s_g_2 = (cfg.subsample_size**2) * s1 / cfg.sample_size + s2/(B_I * cfg.nB)
         error = np.sqrt(s_g_2) * ppf 
         ci_gap_two_sided =  [dag_gap - error, dag_gap + error]  
 
         print(f"{ci_gap_two_sided = }")
-        return ci_gap_two_sided
+        return ci_gap_two_sided, dag_gap
     else:
         return None

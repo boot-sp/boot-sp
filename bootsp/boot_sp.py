@@ -307,7 +307,7 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
 
         
         
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, dag_optimal, dag_upper, dag_gap
     else:
         return None, None, None
 
@@ -410,7 +410,7 @@ def subsampling(cfg, module, xhat):
         err_gap = np.sqrt(cfg.subsample_size / cfg.sample_size) * np.quantile(boot_gaps - dag_gap,  [1- alpha, alpha])
         ci_gap = dag_gap - err_gap
         
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, dag_optimal,  dag_upper, dag_gap
     else:
         return None, None, None
 
@@ -526,7 +526,7 @@ def extended_bootstrap(cfg, module, xhat):
 
 
 
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap
     else:
         return None, None, None
 
@@ -651,7 +651,7 @@ def bagging_bootstrap(cfg, module, xhat, replacement = True):
         ci_upper = [center_upper - dd * cov_upper, center_upper + dd * cov_upper]
         ci_gap = [center_gap - dd * cov_gap, center_gap + dd * cov_gap]
         
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap
     else:
         return None, None, None
 

@@ -29,22 +29,26 @@ def empirical_main_routine(cfg, module):
         xhat = boot_utils.compute_xhat(cfg, module)
         
     if cfg.boot_method == "Extended":
-        ci_optimal,ci_upper, ci_gap =  boot_sp.extended_bootstrap(cfg, module, xhat)
+        ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.extended_bootstrap(cfg, module, xhat)
     elif cfg.boot_method == "Bagging_with_replacement":
-        ci_optimal,ci_upper, ci_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = True)
+        ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = True)
     elif cfg.boot_method == "Bagging_without_replacement":
-        ci_optimal,ci_upper, ci_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = False)
+        ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = False)
     elif cfg.boot_method == "Classical_quantile":
-        ci_optimal,ci_upper, ci_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = True)
+        ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = True)
     elif cfg.boot_method == "Classical_gaussian":
-        ci_optimal,ci_upper, ci_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = False)
+        ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = False)
     elif cfg.boot_method == "Subsampling":
-        ci_optimal,ci_upper, ci_gap =  boot_sp.subsampling(cfg, module, xhat)
+        ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.subsampling(cfg, module, xhat)
     else:
         raise ValueError(f"boot_method={cfg.boot_method} is not supported.")
 
     if my_rank == 0:
         # print result    
+        print(f"point estimator for optimal function value: {center_optimal}")
+        print(f"point estimator for function value at xhat: {center_upper}")
+        print(f"point estimator for optimality gap: {center_gap}")
+        ci_gap[0] = max(0, ci_gap[0])
         print(f"ci for optimal function value: {ci_optimal}")
         print(f"ci for function value at xhat: {ci_upper}")
         print(f"ci for optimality gap: {ci_gap}")
@@ -80,21 +84,23 @@ def smoothed_main_routine(cfg, module):
     else:
         xhat = boot_utils.compute_xhat(cfg, module)
 
-    if cfg.boot_method == "smoothed_boot_epi":
-            ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline')
-    elif cfg.boot_method == "smoothed_boot_kernel":
-        ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel')
-    elif cfg.boot_method == "smoothed_boot_epi_quantile":
-        ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', quantile=True)
-    elif cfg.boot_method == "smoothed_boot_kernel_quantile":
-        ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
-    elif cfg.boot_method == "smoothed_bagging":
-        ci_gap_two_sided = smoothed_boot_sp.smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel')
+    if cfg.boot_method == "Smoothed_boot_epi":
+        ci_gap_two_sided, center_gap = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline')
+    elif cfg.boot_method == "Smoothed_boot_kernel":
+        ci_gap_two_sided, center_gap = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel')
+    elif cfg.boot_method == "Smoothed_boot_epi_quantile":
+        ci_gap_two_sided, center_gap = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', quantile=True)
+    elif cfg.boot_method == "Smoothed_boot_kernel_quantile":
+        ci_gap_two_sided, center_gap = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
+    elif cfg.boot_method == "Smoothed_bagging":
+        ci_gap_two_sided, center_gap = smoothed_boot_sp.smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel')
     else:
         raise ValueError(f"unrecognized method: {cfg.boot_method} ")
     
     if my_rank == 0:
-        # print result    
+        # print result  
+        ci_gap_two_sided[0] = max(0, ci_gap_two_sided[0]) 
+        print(f"point estimator for the optimality gap: {center_gap}")
         print(f"two-sided CI for optimality gap: {ci_gap_two_sided}")
     
 
@@ -114,7 +120,7 @@ if __name__ == '__main__':
 
     xhat_fname = cfg["xhat_fname"]
 
-    if "smoothed" not in cfg.boot_method:
+    if "Smoothed" not in cfg.boot_method:
         empirical_main_routine(cfg, module)
     else:
         smoothed_main_routine(cfg, module)
