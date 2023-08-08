@@ -8,6 +8,7 @@ import mpisppy.confidence_intervals.ciutils as ciutils
 import bootsp.boot_utils as boot_utils
 import bootsp.boot_sp as boot_sp
 import bootsp.smoothed_boot_sp as smoothed_boot_sp
+import json
 
 # TBD: we are using the mpi-sppy MPI wrapper to help windows users live without MPI.
 import mpisppy.MPI as MPI
@@ -143,15 +144,15 @@ def smoothed_main_routine(cfg, module):
             st_time = time.time()
         # ci_gap =  smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
         if cfg.boot_method == "Smoothed_boot_epi":
-            ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline')
+            ci_gap_two_sided, _ = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline')
         elif cfg.boot_method == "Smoothed_boot_kernel":
-            ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel')
+            ci_gap_two_sided, _ = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel')
         elif cfg.boot_method == "Smoothed_boot_epi_quantile":
-            ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', quantile=True)
+            ci_gap_two_sided, _ = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', quantile=True)
         elif cfg.boot_method == "Smoothed_boot_kernel_quantile":
-            ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
+            ci_gap_two_sided, _ = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
         elif cfg.boot_method == "Smoothed_bagging":
-            ci_gap_two_sided = smoothed_boot_sp.smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel')
+            ci_gap_two_sided, _ = smoothed_boot_sp.smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel')
         else:
             raise ValueError(f"unrecognized method: {cfg.boot_method} ")
 

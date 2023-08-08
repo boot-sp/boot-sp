@@ -1,3 +1,4 @@
+# farmer_fit for fit_resample
 # copied from mpi-sppy 19July 2022; xhat code added Aug 2022;
 #   num-scens dropped from command line Aug 2022
 # unlimited crops
@@ -20,31 +21,50 @@ import mpisppy.scenario_tree as scenario_tree
 import mpisppy.utils.sputils as sputils
 from mpisppy.utils import config
 import mpisppy.utils.amalgamator as amalgamator
+import statdist
+from statdist.sampler import Sampler
 
 # Use this random stream:
 farmerstream = np.random.RandomState()
 
-def scenario_creator(
-    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=1,
-        num_scens=None, seedoffset=0
-):
-    """ Create a scenario for the (scalable) farmer example.
+
+
+def _get_distr_dict(cfg):
+
+    def _get_b(c, cv):
+        # c is approximately the lower bound of crop yield, cv is approx coefficient of variation 
+        # if no specified yield_cv, use the original scalable farmer unif(0,1)
+        if cv is None:
+            return 1
+        else:
+            return c*cv/(1/np.sqrt(12) -cv/2)
     
+    if not getattr(cfg, "use_fitted", False):
+        uunif = statdist.distribution_factory('univariate-unif')
+        distr_dict ={}
+        for i in range(cfg.crops_multiplier):
+            distr_dict[f"WHEAT{i}"] = uunif(0, _get_b(2.5, cfg.yield_cv))
+            distr_dict[f"CORN{i}"] = uunif (0,_get_b(3, cfg.yield_cv))
+            distr_dict[f"SUGAR_BEETS{i}"] = uunif(0,_get_b(20, cfg.yield_cv))
+    else:
+        distr_dict = cfg.fitted_distribution
+    return distr_dict
+
+def scenario_creator(
+    scenario_name, cfg, sense=pyo.minimize, seed_offset=None
+):
+    """ Create a scenario for the (scalable) farmer example.  
     Args:
         scenario_name (str):
             Name of the scenario to construct.
-        use_integer (bool, optional):
-            If True, restricts variables to be integer. Default is False.
+        cfg (Config): 
+            control parameters
         sense (int, optional):
             Model sense (minimization or maximization). Must be either
             pyo.minimize or pyo.maximize. Default is pyo.minimize.
-        crops_multiplier (int, optional):
-            Factor to control scaling. There will be three times this many
-            crops. Default is 1.
-        num_scens (int, optional):
-            Number of scenarios. We use it to compute _mpisppy_probability. 
-            Default is None.
-        seedoffset (int): used by confidence interval code
+        seed_offset (int): used by confidence interval code
+    Note: 
+        if cfg.yield_cv is None, give the behavior of the original scalable farmer
     """
     # scenario_name has the form <str><int> e.g. scen12, foobar7
     # The digits are scraped off the right of scenario_name using regex then
@@ -55,15 +75,26 @@ def scenario_creator(
     groupnum  = scennum // 3
     scenname  = basenames[basenum]+str(groupnum)
 
+
     # The RNG is seeded with the scenario number so that it is
     # reproducible when used with multiple threads.
     # NOTE: if you want to do replicates, you will need to pass a seed
     # as a kwarg to scenario_creator then use seed+scennum as the seed argument.
-    farmerstream.seed(scennum+seedoffset)
+    seed_offset = cfg.get("seed_offset",0) if seed_offset is None else seed_offset
+
+    farmerstream.seed(scennum+seed_offset)
+
+    use_integer= cfg.get('use_integer', False)
+    crops_multiplier= cfg.get('crops_multiplier', 1)
+    num_scens = cfg.get('num_scens', None)
 
     # Check for minimization vs. maximization
     if sense not in [pyo.minimize, pyo.maximize]:
         raise ValueError("Model sense Not recognized")
+
+    uunif = statdist.distribution_factory('univariate-unif')
+
+    distr_dict = _get_distr_dict(cfg)
 
     # Create the concrete model object
     model = pysp_instance_creation_callback(
@@ -71,29 +102,51 @@ def scenario_creator(
         use_integer=use_integer,
         sense=sense,
         crops_multiplier=crops_multiplier,
+        distr_dict=distr_dict,
+        num_scens = num_scens
     )
 
-    # Create the list of nodes associated with the scenario (for two stage,
-    # there is only one node associated with the scenario--leaf nodes are
-    # ignored).
-    model._mpisppy_node_list = [
-        scenario_tree.ScenarioNode(
-            name="ROOT",
-            cond_prob=1.0,
-            stage=1,
-            cost_expression=model.FirstStageCost,
-            nonant_list=[model.DevotedAcreage],
-            scen_model=model,
-        )
-    ]
     
-    #Add the probability of the scenario
-    if num_scens is not None :
-        model._mpisppy_probability = 1/num_scens
+    # data = data_sampler(scennum, cfg)
+    # print(f"now printing data for scennum {scennum}")
+    # print(data)
+
     return model
 
+
+
+def data_sampler(record_num, cfg):
+    # return the fluctuation data around the baseline from a sample
+    # Note: we are syncronizing using the seed
+    # yield as in "crop yield"
+
+    distr_dict = _get_distr_dict(cfg)
+    farmerstream.seed(record_num+cfg.seed_offset)
+    groupnum  = record_num // 3
+
+    sampler_dict = {}
+    for i in range(cfg.crops_multiplier):
+        if groupnum != 0:
+            sampler_dict[f"WHEAT{i}"] = Sampler([distr_dict[f"WHEAT{i}"]], farmerstream)
+            sampler_dict[f"CORN{i}"] = Sampler([distr_dict[f"CORN{i}"]], farmerstream)
+            sampler_dict[f"SUGAR_BEETS{i}"] = Sampler([distr_dict[f"SUGAR_BEETS{i}"]], farmerstream)
+ 
+    data = {}
+    for i in range(cfg.crops_multiplier):
+        if groupnum != 0:
+            data[f"WHEAT{i}"] = sampler_dict[f"WHEAT{i}"].sample_one()[0]
+            data[f"CORN{i}"] = sampler_dict[f"CORN{i}"].sample_one()[0]
+            data[f"SUGAR_BEETS{i}"] = sampler_dict[f"SUGAR_BEETS{i}"].sample_one()[0]
+        else:
+            data[f"WHEAT{i}"] = 0
+            data[f"CORN{i}"] = 0
+            data[f"SUGAR_BEETS{i}"] = 0
+    return data
+
+
+
 def pysp_instance_creation_callback(
-    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=1
+    scenario_name, use_integer=False, sense=pyo.minimize, crops_multiplier=1, distr_dict=None,  num_scens=None
 ):
     # long function to create the entire model
     # scenario_name is a string (e.g. AboveAverageScenario0)
@@ -101,6 +154,7 @@ def pysp_instance_creation_callback(
     # Returns a concrete model for the specified scenario
 
     # scenarios come in groups of three
+    # print(scenario_name)
     scengroupnum = sputils.extract_num(scenario_name)
     scenario_base_name = scenario_name.rstrip("0123456789")
     
@@ -158,11 +212,15 @@ def pysp_instance_creation_callback(
     Yield['AboveAverageScenario'] = \
         {'WHEAT':3.0,'CORN':3.6,'SUGAR_BEETS':24.0}
 
+
     def Yield_init(m, cropname):
         # yield as in "crop yield"
+        sampler = Sampler([distr_dict[cropname]], farmerstream)
         crop_base_name = cropname.rstrip("0123456789")
         if scengroupnum != 0:
-            return Yield[scenario_base_name][crop_base_name]+farmerstream.rand()
+            pertubation = sampler.sample_one()[0]
+            # print(f"{pertubation =}")
+            return Yield[scenario_base_name][crop_base_name]+ pertubation
         else:
             return Yield[scenario_base_name][crop_base_name]
 
@@ -231,6 +289,26 @@ def pysp_instance_creation_callback(
     model.Total_Cost_Objective = pyo.Objective(rule=total_cost_rule, 
                                                sense=sense)
 
+    # Create the list of nodes associated with the scenario (for two stage,
+    # there is only one node associated with the scenario--leaf nodes are
+    # ignored).
+    model._mpisppy_node_list = [
+        scenario_tree.ScenarioNode(
+            name="ROOT",
+            cond_prob=1.0,
+            stage=1,
+            cost_expression=model.FirstStageCost,
+            nonant_list=[model.DevotedAcreage],
+            scen_model=model,
+        )
+    ]
+    
+    #Add the probability of the scenario
+    if num_scens is not None :
+        model._mpisppy_probability = 1/num_scens
+    else:
+        model._mpisppy_probability = "uniform"
+
     return model
 
 # begin functions not needed by farmer_cylinders
@@ -258,16 +336,42 @@ def inparser_adder(cfg):
                       description="make the version that has integers (default False)",
                       domain=bool,
                       default=False)
+    cfg.add_to_config("yield_cv",
+                      description="approximate farmer crop yield coefficient of variation (default None for unif(0,1) )",
+                      domain=float,
+                      default=None)
+
 
 
 #=========
 def kw_creator(cfg):
     # (for Amalgamator): linked to the scenario_creator and inparser_adder
-    kwargs = {"use_integer": cfg.get('use_integer', False),
-              "crops_multiplier": cfg.get('crops_multiplier', 1),
-              "num_scens" : cfg.get('num_scens', None),
-              }
+    kwargs = {"cfg": cfg}
     return kwargs
+
+def sample_tree_scen_creator(sname, stage, sample_branching_factors, seed,
+                             given_scenario=None, **scenario_creator_kwargs):
+    """ Create a scenario within a sample tree. Mainly for multi-stage and simple for two-stage.
+        (this function supports zhat and confidence interval code)
+    Args:
+        sname (string): scenario name to be created
+        stage (int >=1 ): for stages > 1, fix data based on sname in earlier stages
+        sample_branching_factors (list of ints): branching factors for the sample tree
+        seed (int): To allow random sampling (for some problems, it might be scenario offset)
+        given_scenario (Pyomo concrete model): if not None, use this to get data for ealier stages
+        scenario_creator_kwargs (dict): keyword args for the standard scenario creator funcion
+    Returns:
+        scenario (Pyomo concrete model): A scenario for sname with data in stages < stage determined
+                                         by the arguments
+    """
+    # Since this is a two-stage problem, we don't have to do much.
+    sca = scenario_creator_kwargs.copy()
+    sca["seed_offset"] = seed
+    sca["num_scens"] = sample_branching_factors[0]  # two-stage problem
+    return scenario_creator(sname, **sca)
+
+
+# end functions not needed by farmer_cylinders
 
 
 #============================
@@ -282,16 +386,16 @@ def scenario_denouement(rank, scenario_name, scenario):
 
 
 #============================
-def xhat_generator_farmer(scenario_names, solver_name="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
+def xhat_generator_farmer(scenario_names, solvername="gurobi", solver_options=None, crops_multiplier=1, use_integer=False):
     ''' Given scenario names and
     options, create the scenarios and compute the xhat that is minimizing the
     approximate problem associated with these scenarios.
 
     Parameters
     ----------
-    scenario_names: list of str
+    scenario_names: int
         Names of the scenario we use
-    solver_name: str, optional
+    solvername: str, optional
         Name of the solver used. The default is "gurobi".
     solver_options: dict, optional
         Solving options. The default is None.
@@ -310,7 +414,7 @@ def xhat_generator_farmer(scenario_names, solver_name="gurobi", solver_options=N
     
     cfg = config.Config()
     cfg.quick_assign("EF_2stage", bool, True)
-    cfg.quick_assign("EF_solver_name", str, solver_name)
+    cfg.quick_assign("EF_solver_name", str, solvername)
     cfg.quick_assign("EF_solver_options", dict, solver_options)
     cfg.quick_assign("num_scens", int, num_scens)
     cfg.quick_assign("_mpisppy_probability", float, 1/num_scens)

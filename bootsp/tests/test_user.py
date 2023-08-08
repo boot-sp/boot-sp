@@ -32,6 +32,12 @@ methods_empirical = ["Classical_gaussian",
          "Subsampling",
          "Extended"]
 
+methods_smoothed = ["Smoothed_boot_kernel",
+                    "Smoothed_boot_kernel_quantile",
+                    "Smoothed_boot_epi",
+                    "Smoothed_boot_epi_quantile",
+                    "Smoothed_bagging"]
+
 #*****************************************************************************
 class Test_user(unittest.TestCase):
     """ Test the boot_user code.
@@ -112,12 +118,42 @@ class Test_user(unittest.TestCase):
             cfg.nB = 10
             ret_dict[method] = user_boot.empirical_main_routine(cfg, module)
         return ret_dict
+
+    def _do_smoothed(self, dirname, module_name):
+        # do the test, return a dictionary of return values
+        ret_dict = dict()
+        json_fname = self._json_path(dirname, module_name)
+
+        cfg = boot_utils._process_module(module_name)
+        parser = cfg.create_parser(f"test user {module_name}")
+        arglist = self._make_arglist(solver_name)
+        args = parser.parse_args(arglist)
+        args = cfg.import_argparse(args)
+        cfg.module_name = module_name
+
+        cfg.solver_name = solver_name
+        module = boot_utils.module_name_to_module(module_name)
+        for method in methods_empirical:
+            print(f"Trying {method} for {module_name}")
+            # These are *not* good parameters for real use...
+            cfg.boot_method = method
+            cfg.sample_size = 40
+            cfg.subsample_size = 20
+            cfg.nB = 10
+            cfg.smoothed_B_I = 3
+            cfg.smoothed_center_sample_size = 10
+            ret_dict[method] = user_boot.empirical_main_routine(cfg, module)
+        return ret_dict
+
+    
     
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
-    def test_cvar(self):
-        results = self._do_empirical("cvar", "cvar")
+    # def test_cvar(self):
+    #     results = self._do_empirical("cvar", "cvar")
+    def test_smoothed_cvar(self):
+        results = self._do_smoothed("cvar", "cvar")
 
 if __name__ == '__main__':
     unittest.main()

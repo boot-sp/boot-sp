@@ -17,6 +17,7 @@ parallelization, MPI is used.
    canned.rst
    build_your_own.rst
    optional.rst
+   smoothed.rst
    refs.rst
 
 Indices and Tables

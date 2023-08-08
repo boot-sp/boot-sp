@@ -7,6 +7,8 @@ from mpisppy.utils import config
 import mpisppy.scenario_tree as scenario_tree
 import mpisppy.utils.sputils as sputils
 import mpisppy.utils.amalgamator as amalgamator
+import statdist
+from statdist.sampler import Sampler
 
 # Use this random stream:
 sstream = np.random.RandomState(1)
@@ -22,14 +24,49 @@ def _read_detdata(cfg):
         raise
     return detdata
 
-def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
+def _get_distr_dict(cfg, detdata):
+    if not getattr(cfg, "use_fitted", False):
+        unorm = statdist.distribution_factory('univariate-normal')
+        varset = pyo.RangeSet(detdata["num_prods"])
+        distr_dict = {}
+        for i in varset:
+            distr_dict[i] = {
+                    "high":  unorm( var=(detdata["stdev_d"]["high"])**2, mean=detdata["mean_d"]["high"]), 
+                    "low": unorm( var=(detdata["stdev_d"]["low"])**2, mean=detdata["mean_d"]["low"])
+                }
+    else:
+        distr_dict = cfg.fitted_distribution
+    return distr_dict
+
+def data_sampler(record_num, cfg):
+    detdata = cfg.detdata
+    
+    distr_dict = _get_distr_dict(cfg, detdata)
+    sstream.seed(record_num+cfg.seed_offset)
+
+    #this part of the code is the same as in the scenario creator
+    data = {}
+    varset = pyo.RangeSet(detdata["num_prods"])
+    if cfg.use_fitted:
+        for i in varset:
+            sampler = Sampler([distr_dict[i]], sstream)
+            data[i] = max(0,int(sampler.sample_one()[0]))
+    else:
+        for i in varset:
+            state = 'high' if sstream.uniform() < 0.5 else 'low'
+            sampler = Sampler([distr_dict[i][state]], sstream)
+            data[i] = max(0,int(sampler.sample_one()[0]))
+    return data
+  
+
+def scenario_creator(scenario_name, cfg=None, seed_offset=None, num_scens=None):
     """ Create the CVaR examples using Schultz method we always use
     
     Args:
         scenario_name (str):
             Name of the scenario to construct.
         cfg (Config): the control parameters
-        seedoffset (int): used by confidence interval code
+        seed_offset (int): used by confidence interval code
     Returns:
         model (ConcreteModel): the Pyomo model
     """
@@ -38,7 +75,9 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     # converted mod 3 into one of the below avg./avg./above avg. scenarios
     scennum   = sputils.extract_num(scenario_name)
 
-    sstream.seed(scennum+seedoffset)  # allows for resampling easily
+    seed_offset = cfg.get("seed_offset",0) if seed_offset is None else seed_offset
+    sstream.seed(scennum+seed_offset)  # allows for resampling easily
+    num_scens = cfg.get('num_scens', None)
 
     # Create the concrete model object
     model = pyo.ConcreteModel(f"multi-knapsack {scenario_name}")
@@ -60,7 +99,13 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     model.w = pyo.Var(model.I, within=pyo.NonNegativeReals, initialize=0)
 
     # tbd: add correlation option
-    d = {i: max(0, int(sstream.normal(detdata["mean_d"][str(i)], detdata["stdev_d"][str(i)]))) for i in model.I}
+    d = data_sampler(scennum, cfg)
+    # distr_dict = _get_distr_dict(cfg, detdata)
+    # d = {}
+    # for i in model.I:
+    #     sampler = Sampler([distr_dict[i]], sstream)
+    #     d[i] = max(0,int(sampler.sample_one()[0]))
+    # d = {i: max(0,int(sstream.normal(detdata["mean_d"][str(i)], detdata["stdev_d"][str(i)]))) for i in model.I}
 
     # note: the json indexes are strings
     
@@ -85,11 +130,12 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     model.w_constraint = pyo.Constraint(model.I, rule=w_rule)
 
     m = model  # typing aid
-    model.Obj1 = pyo.Expression(expr=sum(v[str(i)]*(m.y[i]+m.zt[i])
+    model.Obj1 = pyo.Expression(expr=-sum(v[str(i)]*(m.y[i]+m.zt[i])
                                          + g[str(i)]*m.w[i]
                                          - c[str(i)]*m.x[i] for i in m.I))
 
-    model.obj = pyo.Objective(expr=model.Obj1, sense=pyo.maximize)
+    # model.obj = pyo.Objective(expr=model.Obj1, sense=pyo.maximize)
+    model.obj = pyo.Objective(expr=model.Obj1, sense=pyo.minimize)
 
     # Create the list of nodes associated with the scenario (for two stage,
     # there is only one node associated with the scenario--leaf nodes are
@@ -100,6 +146,8 @@ def scenario_creator(scenario_name, cfg=None, seedoffset=0, num_scens=None):
     #Add the probability of the scenario
     if num_scens is not None :
         model._mpisppy_probability = 1/num_scens
+    else:
+        model._mpisppy_probability = "uniform"
     return model
 
 #=========
@@ -131,7 +179,7 @@ def scenario_denouement(rank, scenario_name, scenario):
     pass
 
 #============================
-def xhat_generator_multi_knapsack(scenario_names, solver_name=None,cfg=None):
+def xhat_generator_multi_knapsack_fit(scenario_names, solver_name=None,cfg=None):
     ''' Given scenario names and
     options, create the scenarios and compute the xhat that is minimizing the
     approximate problem associated with these scenarios.

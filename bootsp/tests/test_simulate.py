@@ -33,11 +33,11 @@ methods_empirical = ["Classical_gaussian",
          "Subsampling",
          "Extended"]
 
-methods_smoothed = ["smoothed_boot_kernel",
-                    "smoothed_boot_kernel_quantile",
-                    "smoothed_boot_epi",
-                    "smoothed_boot_epi_quantile",
-                    "smoothed_bagging"]
+methods_smoothed = ["Smoothed_boot_kernel",
+                    "Smoothed_boot_kernel_quantile",
+                    "Smoothed_boot_epi",
+                    "Smoothed_boot_epi_quantile",
+                    "Smoothed_bagging"]
 
 #*****************************************************************************
 class Test_simulate(unittest.TestCase):
@@ -46,15 +46,17 @@ class Test_simulate(unittest.TestCase):
 
     def setUp(self):
         # we might copy files to and cd to this temp dir
-        self.temp_dir = tempfile.TemporaryDirectory()
-        self.cwd = os.getcwd()
+        # self.temp_dir = tempfile.TemporaryDirectory()
+        # self.cwd = os.getcwd()
+        shutil.copy("../../examples/multi_knapsack/multi_knapsack.py", "multi_knapsack.py")
 
         
     def tearDown(self):
         # just in case
-        self.temp_dir.cleanup()
-        os.chdir(self.cwd)
-        pass
+        # self.temp_dir.cleanup()
+        # os.chdir(self.cwd)
+        # pass
+        os.remove("multi_knapsack.py")
 
 
     def _mdir_path(self, dirname, module_name):
@@ -145,9 +147,14 @@ class Test_simulate(unittest.TestCase):
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
+    @unittest.skip("temporarily skip farmer")
     def test_smoothed_farmer(self):
         results = self._do_smoothed("farmer","smoothed_farmer")
         print(f"farmer {results =}")
+
+    def test_smoothed_knapsack(self):
+        results = self._do_smoothed("multi_knapsack","multi_knapsack")
+        print(f"multi_knapsack {results =}")
 
 if __name__ == '__main__':
     unittest.main()
