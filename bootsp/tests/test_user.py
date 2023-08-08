@@ -37,17 +37,23 @@ class Test_user(unittest.TestCase):
     """ Test the boot_user code.
         Assumes naming conventions for filenames"""
 
+    # @classmethod
+    # def setUpClass(cls):
+    #     shutil.copy("../../examples/cvar/cvar.py", "cvar.py")
+
     def setUp(self):
         # we might copy files to and cd to this temp dir
-        self.temp_dir = tempfile.TemporaryDirectory()
-        self.cwd = os.getcwd()
+        # self.temp_dir = tempfile.TemporaryDirectory()
+        # self.cwd = os.getcwd()
+        shutil.copy("../../examples/cvar/cvar.py", "cvar.py")
 
         
     def tearDown(self):
         # just in case
-        self.temp_dir.cleanup()
-        os.chdir(self.cwd)
-        pass
+        # self.temp_dir.cleanup()
+        # os.chdir(self.cwd)
+        # pass
+        os.remove("cvar.py")
 
 
     def _mdir_path(self, dirname, module_name):
