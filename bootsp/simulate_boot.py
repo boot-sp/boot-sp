@@ -142,15 +142,15 @@ def smoothed_main_routine(cfg, module):
         if my_rank == 0:
             st_time = time.time()
         # ci_gap =  smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
-        if cfg.boot_method == "smoothed_boot_epi":
+        if cfg.boot_method == "Smoothed_boot_epi":
             ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline')
-        elif cfg.boot_method == "smoothed_boot_kernel":
+        elif cfg.boot_method == "Smoothed_boot_kernel":
             ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel')
-        elif cfg.boot_method == "smoothed_boot_epi_quantile":
+        elif cfg.boot_method == "Smoothed_boot_epi_quantile":
             ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', quantile=True)
-        elif cfg.boot_method == "smoothed_boot_kernel_quantile":
+        elif cfg.boot_method == "Smoothed_boot_kernel_quantile":
             ci_gap_two_sided = smoothed_boot_sp.smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-kernel', quantile=True)
-        elif cfg.boot_method == "smoothed_bagging":
+        elif cfg.boot_method == "Smoothed_bagging":
             ci_gap_two_sided = smoothed_boot_sp.smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel')
         else:
             raise ValueError(f"unrecognized method: {cfg.boot_method} ")
@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
     # xhat_fname = cfg["xhat_fname"]
 
-    if "smoothed" not in cfg.boot_method:
+    if "Smoothed" not in cfg.boot_method:
         coverage = empirical_main_routine(cfg, module)
     else:
         coverage = smoothed_main_routine(cfg, module)

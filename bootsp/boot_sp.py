@@ -69,6 +69,7 @@ def process_optimal(cfg, module):
         opt_obj = tmp[0]
         opt_gap = tmp[1]
         print(f"   ...optimal value: {opt_obj}")
+        print(f"   ...optimality gap: {opt_gap}")
     else:
         print('No calculated optimal found, starting computing the "actual" optimal')
         print("Computing optimal function value on Rank 0 only")

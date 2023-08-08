@@ -269,11 +269,9 @@ def smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel', serial=F
 
     if my_rank == 0:
         print(f"{np.array(avg_gaps)=}")
-        global_toc("Done Smoothed Bagging MH")
-        print("subsample size for smoothed bagging set to be sample size//4")
+        global_toc("Done Smoothed Bagging")
 
         dag_gap = np.mean(avg_gaps) 
-        print(f"{dag_gap=}")
         
         s1 = np.var(avg_gaps)
         s2 = np.var(all_gaps)
