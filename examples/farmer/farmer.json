@@ -14,5 +14,6 @@
     "trace_fname" : "None",
     "coverage_replications": 400,
     "crops_multiplier": 1,
-    "farmer_with_integers": "False"
+    "farmer_with_integers": "False",
+    "yield_cv": "0.1"
     }
