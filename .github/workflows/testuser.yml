@@ -28,7 +28,7 @@ jobs:
         run: |
           conda install mpi4py setuptools
           pip install pyomo xpress cplex matplotlib 
-          pip install ipopt
+          conda install -c conda-forge ipopt
 
       - name: set up mpi-sppy
         run: |
