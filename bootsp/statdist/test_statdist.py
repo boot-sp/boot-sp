@@ -8,7 +8,7 @@ import sys
 import os
 import shutil
 import json
-from statdist.distributions import UnivariateDiscrete
+from bootsp.statdist.distributions import UnivariateDiscrete
 from collections import OrderedDict
 
 __author__ = 'David L. Woodruff <DLWoodruff@UCDavis.edu>'

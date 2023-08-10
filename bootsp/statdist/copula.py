@@ -12,15 +12,15 @@ from scipy.stats import kendalltau, pearsonr, spearmanr
 from scipy.integrate import quad
 from scipy.optimize import fmin
 
-from statdist.base_distribution import fit_wrapper, Parameter
-from statdist.base_distribution import accepts_dict, returns_dict
-from statdist.base_distribution import MultivariateDistribution
-from statdist.distributions import epsilon
-from statdist.distributions import MultiStudentDistribution
-from statdist.distributions import UnivariateEmpiricalDistribution
-from statdist.distribution_factory import distribution_factory
-from statdist.distribution_factory import register_distribution
-from statdist.utilities import memoize_method
+from bootsp.statdist.base_distribution import fit_wrapper, Parameter
+from bootsp.statdist.base_distribution import accepts_dict, returns_dict
+from bootsp.statdist.base_distribution import MultivariateDistribution
+from bootsp.statdist.distributions import epsilon
+from bootsp.statdist.distributions import MultiStudentDistribution
+from bootsp.statdist.distributions import UnivariateEmpiricalDistribution
+from bootsp.statdist.distribution_factory import distribution_factory
+from bootsp.statdist.distribution_factory import register_distribution
+from bootsp.statdist.utilities import memoize_method
 
 
 class CopulaBase(MultivariateDistribution):

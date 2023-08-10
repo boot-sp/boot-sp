@@ -14,13 +14,13 @@ from scipy import integrate
 from scipy.stats import mvn
 import scipy.special as sps
 
-from statdist.distribution_factory import register_distribution
-from statdist.base_distribution import fit_wrapper, Parameter
-from statdist.base_distribution import accepts_dict, returns_dict
-from statdist.base_distribution import UnivariateDistribution
-from statdist.base_distribution import MultivariateDistribution
-from statdist.utilities import memoize_method
-from statdist import splines
+from bootsp.statdist.distribution_factory import register_distribution
+from bootsp.statdist.base_distribution import fit_wrapper, Parameter
+from bootsp.statdist.base_distribution import accepts_dict, returns_dict
+from bootsp.statdist.base_distribution import UnivariateDistribution
+from bootsp.statdist.base_distribution import MultivariateDistribution
+from bootsp.statdist.utilities import memoize_method
+from bootsp.statdist import splines
 from scipy.stats import gaussian_kde
 from scipy import interpolate
 

@@ -2,10 +2,10 @@ import numpy as np
 from scipy.special import gamma
 from scipy.stats import norm, t
 
-from statdist.base_distribution import Parameter, params_as_args, params_as_args2
-from statdist.distributions import epsilon
-from statdist.copula import CopulaBase
-from statdist.distribution_factory import register_distribution
+from bootsp.statdist.base_distribution import Parameter, params_as_args, params_as_args2
+from bootsp.statdist.distributions import epsilon
+from bootsp.statdist.copula import CopulaBase
+from bootsp.statdist.distribution_factory import register_distribution
 
 class BivariateCopula(CopulaBase):
     """

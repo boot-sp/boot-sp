@@ -1,9 +1,9 @@
 import numpy as np
 
-from statdist.copula import CopulaBase
-from statdist.base_distribution import fit_wrapper, accepts_dict
-from statdist.distribution_factory import register_distribution
-from statdist.distribution_factory import distribution_factory
+from bootsp.statdist.copula import CopulaBase
+from bootsp.statdist.base_distribution import fit_wrapper, accepts_dict
+from bootsp.statdist.distribution_factory import register_distribution
+from bootsp.statdist.distribution_factory import distribution_factory
 
 
 class Node:

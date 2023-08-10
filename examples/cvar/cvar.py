@@ -5,7 +5,7 @@ import mpisppy.scenario_tree as scenario_tree
 import mpisppy.utils.sputils as sputils
 import numpy as np
 import bootsp.statdist as statdist
-from statdist.sampler import Sampler
+from bootsp.statdist.sampler import Sampler
 
 # Use this random stream:
 sstream = np.random.RandomState(1)

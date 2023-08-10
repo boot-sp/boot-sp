@@ -13,7 +13,7 @@ from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from statdist.utilities import memoize_method
+from bootsp.statdist.utilities import memoize_method
 
 class Parameter:
     """
