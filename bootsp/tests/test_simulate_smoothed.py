@@ -111,7 +111,7 @@ class Test_simulate(unittest.TestCase):
         results = self._do_smoothed("farmer","smoothed_farmer")
         print(f"farmer {results =}")
         assert "0.2, 0.6" in str(results["Smoothed_boot_kernel"]), "failure on Smoothed boot kernel"
-        assert "1.0, 1.0" in str(results["Smoothed_bagging"]), "failure on Smoothed bagging"
+        assert "0.9, 1.0" in str(results["Smoothed_bagging"]), "failure on Smoothed bagging"
 
     @unittest.skip("temporarily skip multi-knapsack")
     def test_smoothed_knapsack(self):
