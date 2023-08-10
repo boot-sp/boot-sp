@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import mpisppy.MPI as MPI
 import json
 import bootsp.boot_sp as boot_sp
-import statdist
+import bootsp.statdist as statdist
 
 n_proc = MPI.COMM_WORLD.Get_size()
 my_rank = MPI.COMM_WORLD.Get_rank()

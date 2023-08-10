@@ -162,10 +162,6 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
     # zhat=ev.evaluate(nonant_cache)
     zhat = ev.evaluate(xhat)
 
-    # objs_at_xhat = ev.objs_dict
-    # print(zhat)
-    # print(len(objs_at_xhat))
-
     return zhat
 
 
