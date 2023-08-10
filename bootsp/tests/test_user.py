@@ -133,7 +133,7 @@ class Test_user(unittest.TestCase):
 
         cfg.solver_name = solver_name
         module = boot_utils.module_name_to_module(module_name)
-        for method in methods_empirical:
+        for method in methods_smoothed:
             print(f"Trying {method} for {module_name}")
             # These are *not* good parameters for real use...
             cfg.boot_method = method
@@ -142,7 +142,7 @@ class Test_user(unittest.TestCase):
             cfg.nB = 10
             cfg.smoothed_B_I = 3
             cfg.smoothed_center_sample_size = 10
-            ret_dict[method] = user_boot.empirical_main_routine(cfg, module)
+            ret_dict[method] = user_boot.smoothed_main_routine(cfg, module)
         return ret_dict
 
     
@@ -150,10 +150,12 @@ class Test_user(unittest.TestCase):
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
-    # def test_cvar(self):
-    #     results = self._do_empirical("cvar", "cvar")
+    def test_empirical_cvar(self):
+        results = self._do_empirical("cvar", "cvar")
+        print(results)
     def test_smoothed_cvar(self):
         results = self._do_smoothed("cvar", "cvar")
+        print(results)
 
 if __name__ == '__main__':
     unittest.main()

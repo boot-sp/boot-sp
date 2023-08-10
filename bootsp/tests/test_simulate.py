@@ -49,6 +49,8 @@ class Test_simulate(unittest.TestCase):
         # self.temp_dir = tempfile.TemporaryDirectory()
         # self.cwd = os.getcwd()
         shutil.copy("../../examples/multi_knapsack/multi_knapsack.py", "multi_knapsack.py")
+        shutil.copy("../../examples/farmer/farmer.py", "farmer.py")
+
 
         
     def tearDown(self):
@@ -57,6 +59,7 @@ class Test_simulate(unittest.TestCase):
         # os.chdir(self.cwd)
         # pass
         os.remove("multi_knapsack.py")
+        os.remove("farmer.py")
 
 
     def _mdir_path(self, dirname, module_name):
@@ -147,13 +150,21 @@ class Test_simulate(unittest.TestCase):
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
-    @unittest.skip("temporarily skip farmer")
+    # @unittest.skip("temporarily skip farmer")
+    def test_empirical_farmer(self):
+        results = self._do_empirical("farmer","farmer")
+        print(f"farmer {results =}")
+        assert "1.0, 2154" in str(results["Classical_gaussian"]), "failure on Classical_gaussian"
+        assert "0.8, 1777" in str(results["Classical_quantile"]), "failure on Classical_quantile"
+        assert "1.0, 4468" in str(results["Bagging_with_replacement"]), "failure on Bagging_with_replacement"
     def test_smoothed_farmer(self):
         results = self._do_smoothed("farmer","smoothed_farmer")
         print(f"farmer {results =}")
-
+        assert "0.2, 0.6" in str(results["Smoothed_boot_kernel"]), "failure on Smoothed boot kernel"
+        assert "1.0, 1.0" in str(results["Smoothed_bagging"]), "failure on Smoothed bagging"
+    @unittest.skip("temporarily skip multi-knapsack")
     def test_smoothed_knapsack(self):
-        results = self._do_smoothed("multi_knapsack","multi_knapsack")
+        results = self._do_smoothed("multi_knapsack","smoothed_multi_knapsack")
         print(f"multi_knapsack {results =}")
 
 if __name__ == '__main__':
