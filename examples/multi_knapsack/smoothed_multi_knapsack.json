@@ -1,6 +1,6 @@
 {
     "module_name": "multi_knapsack",
-    "max_count": 8000, 
+    "max_count": 4000, 
     "candidate_sample_size": 2,
     "sample_size": 20,
     "subsample_size": 3,
@@ -8,12 +8,12 @@
     "smoothed_center_sample_size":40,
     "nB": 5,
     "alpha": 0.05,
-    "seed_offset" :11,
+    "seed_offset" :2,
     "optimal_fname": "multi_knapsack_optimal.npy",
     "xhat_fname": "multi_knapsack_xhat.npy",
     "solver_name": "gurobi_persistent",
     "trace_fname" : "resample_trace.txt",
     "boot_method": "Smoothed_bagging",
-    "coverage_replications": 800,
+    "coverage_replications": 10,
     "deterministic_data_json": "multi_knapsack_data.json"
 }

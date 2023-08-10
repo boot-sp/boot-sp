@@ -8,7 +8,7 @@
     "smoothed_center_sample_size":40,
     "nB": 5,
     "alpha": 0.05,
-    "seed_offset" :11,
+    "seed_offset" :111,
     "optimal_fname": "farmer_optimal.npy",
     "xhat_fname": "farmer_xhat.npy",
     "solver_name": "gurobi_persistent",

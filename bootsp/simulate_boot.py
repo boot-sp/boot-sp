@@ -47,17 +47,17 @@ def empirical_main_routine(cfg, module):
         cfg.seed_offset = seed
         
         if cfg.boot_method == "Extended":
-            ci_optimal,ci_upper, ci_gap =  boot_sp.extended_bootstrap(cfg, module, xhat)
+            ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.extended_bootstrap(cfg, module, xhat)
         elif cfg.boot_method == "Bagging_with_replacement":
-            ci_optimal,ci_upper, ci_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = True)
+            ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = True)
         elif cfg.boot_method == "Bagging_without_replacement":
-            ci_optimal,ci_upper, ci_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = False)
+            ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap = boot_sp.bagging_bootstrap(cfg, module, xhat, replacement = False)
         elif cfg.boot_method == "Classical_quantile":
-            ci_optimal,ci_upper, ci_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = True)
+            ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = True)
         elif cfg.boot_method == "Classical_gaussian":
-            ci_optimal,ci_upper, ci_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = False)
+            ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.classical_bootstrap(cfg, module, xhat, quantile = False)
         elif cfg.boot_method == "Subsampling":
-            ci_optimal,ci_upper, ci_gap =  boot_sp.subsampling(cfg, module, xhat)
+            ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap =  boot_sp.subsampling(cfg, module, xhat)
         else:
             raise ValueError(f"boot_method={cfg.boot_method} is not supported.")
 
@@ -66,7 +66,7 @@ def empirical_main_routine(cfg, module):
 
 
         if my_rank == 0:
-        # print result
+            # print result
             # file_name = cfg.module_name +"_sample_" + str(cfg.sample_size)+ "_nB_" + str(cfg.nB) + ".txt"
             if cfg.trace_fname is not None:
                 with open(cfg.trace_fname,  "a+") as f:
@@ -159,7 +159,7 @@ def smoothed_main_routine(cfg, module):
         if my_rank == 0:
             en_time = time.time()        
         if my_rank == 0:
-        # print result
+            # print result
             # file_name = cfg.module_name +"_sample_" + str(cfg.sample_size)+ "_nB_" + str(cfg.nB) + ".txt"
             if cfg.trace_fname is not None:
                 with open(cfg.trace_fname,  "a+") as f:

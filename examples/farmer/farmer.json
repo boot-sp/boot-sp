@@ -12,7 +12,7 @@
     "solver_name": "cplex_direct",
     "boot_method": "Bagging_with_replacement",
     "trace_fname" : "None",
-    "coverage_replications": 400,
+    "coverage_replications": 10,
     "crops_multiplier": 1,
     "farmer_with_integers": "False",
     "yield_cv": "0.1"

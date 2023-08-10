@@ -155,10 +155,8 @@ def smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', qua
     
     # estimation of CI center
     # dag_gap = center_original(cfg, module, xhat, scenario_pool)
-    global_toc("before fiding center")
     dag_gap = center_smoothed(cfg, module, xhat, mpicomm=comm)
     # dag_gap = center_original(cfg, module, xhat, scenario_pool)
-    global_toc("after finding center")
     comm.Barrier()
     cfg.use_fitted = True
     # conduct an m out of n bootstrap, with B = cfg.nB, and m=cfg_MMW_batch_size
@@ -182,8 +180,7 @@ def smoothed_bootstrap(cfg, module, xhat, distr_type='univariate-epispline', qua
 
 
     if my_rank == 0:
-        global_toc("Done bootstrap")
-        print("subsample size for smoothed boot set to be the same as sample size")
+        global_toc("Done smoothed bootstrap")
 
         if not quantile:
             s_g = np.std(boot_gap, ddof = 1)
@@ -268,7 +265,6 @@ def smoothed_bagging(cfg, module, xhat, distr_type='univariate-kernel', serial=F
             avg_gaps.append(np.mean(bagging_gap))
 
     if my_rank == 0:
-        print(f"{np.array(avg_gaps)=}")
         global_toc("Done Smoothed Bagging")
 
         dag_gap = np.mean(avg_gaps) 
