@@ -33,12 +33,6 @@ methods_empirical = ["Classical_gaussian",
          "Subsampling",
          "Extended"]
 
-methods_smoothed = ["Smoothed_boot_kernel",
-                    "Smoothed_boot_kernel_quantile",
-                    "Smoothed_boot_epi",
-                    "Smoothed_boot_epi_quantile",
-                    "Smoothed_bagging"]
-
 #*****************************************************************************
 class Test_simulate(unittest.TestCase):
     """ Test the boot_simulate code.
@@ -90,9 +84,12 @@ class Test_simulate(unittest.TestCase):
         cfg.coverage_replications = 10
         cfg.seed_offset = 0
         cfg.solver_name = solver_name
-        cfg.quick_assign("trace_fname", str, "_test_simuluate.app")
+        cfg.quick_assign("trace_fname", str, "_test_simuluate_empirical.app")
         module = boot_utils.module_name_to_module(cfg.module_name)
         for method in methods_empirical:
+            if method == "Extended":
+                print("skip Extended bootstrap for now, because community cplex is too small")
+                continue
             print(f"Trying {method} for {module_name}")
             print(f"{cfg.seed_offset =}")
             # These are *not* good parameters for real use...
@@ -102,33 +99,7 @@ class Test_simulate(unittest.TestCase):
             cfg.nB = 10
             ret_dict[method] = simulate_boot.empirical_main_routine(cfg, module)
         return ret_dict
-
-    def _do_smoothed(self, dirname, module_name):
-        # do the test, return a dictionary of return values
-        ret_dict = dict()
-        json_fname = self._json_path(dirname, module_name)
-        cfg = boot_utils.cfg_from_json(json_fname)
-
-        cfg.coverage_replications = 10
-        cfg.seed_offset = 0
-        cfg.solver_name = solver_name
-        cfg.quick_assign("trace_fname", str, "_test_simuluate.app")
-        module = boot_utils.module_name_to_module(cfg.module_name)
-        for method in methods_smoothed:
-            print(f"Trying {method} for {module_name}")
-            print(f"{cfg.seed_offset =}")
-            # These are *not* good parameters for real use...
-            cfg.boot_method = method
-            cfg.sample_size = 40
-            cfg.subsample_size = 20
-            cfg.nB = 10
-            cfg.smoothed_B_I = 3
-            cfg.smoothed_center_sample_size = 10
-            ret_dict[method] = simulate_boot.smoothed_main_routine(cfg, module)
-        return ret_dict
-    
-
-    
+   
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
@@ -157,15 +128,6 @@ class Test_simulate(unittest.TestCase):
         assert "1.0, 2154" in str(results["Classical_gaussian"]), "failure on Classical_gaussian"
         assert "0.8, 1777" in str(results["Classical_quantile"]), "failure on Classical_quantile"
         assert "1.0, 4468" in str(results["Bagging_with_replacement"]), "failure on Bagging_with_replacement"
-    def test_smoothed_farmer(self):
-        results = self._do_smoothed("farmer","smoothed_farmer")
-        print(f"farmer {results =}")
-        assert "0.2, 0.6" in str(results["Smoothed_boot_kernel"]), "failure on Smoothed boot kernel"
-        assert "1.0, 1.0" in str(results["Smoothed_bagging"]), "failure on Smoothed bagging"
-    @unittest.skip("temporarily skip multi-knapsack")
-    def test_smoothed_knapsack(self):
-        results = self._do_smoothed("multi_knapsack","smoothed_multi_knapsack")
-        print(f"multi_knapsack {results =}")
-
+  
 if __name__ == '__main__':
     unittest.main()

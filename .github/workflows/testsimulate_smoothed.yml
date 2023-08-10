@@ -1,6 +1,6 @@
 # simulate
 
-name: simulate_boot tests
+name: simulate_boot_smoothed tests
 
 on:
   push:
@@ -43,4 +43,4 @@ jobs:
         timeout-minutes: 100
         run: |
           cd bootsp/tests
-          python test_simulate.py 
+          python test_simulate_smoothed.py 
