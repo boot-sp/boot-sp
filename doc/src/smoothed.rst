@@ -15,6 +15,6 @@ See "Distributions and Bootstrap for Data-based Stochastic Programming" by Chen 
 Notes
 -----
 
-- Both "smoothed_B_I" and "smoothed_center_sample_size" are required in the json options even though 
+- Both "smoothed_B_I" and "smoothed_center_sample_size" are required in the json options even though only
 one of them is needed.
 
