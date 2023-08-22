@@ -1,6 +1,6 @@
 # simulate
 
-name: simulate_boot tests
+name: simulate_boot_smoothed tests
 
 on:
   push:
@@ -27,7 +27,8 @@ jobs:
       - name: Install dependencies
         run: |
           conda install mpi4py setuptools
-          pip install pyomo xpress cplex
+          pip install pyomo xpress cplex matplotlib 
+          conda install -c conda-forge ipopt
 
       - name: set up mpi-sppy
         run: |
@@ -42,4 +43,4 @@ jobs:
         timeout-minutes: 100
         run: |
           cd bootsp/tests
-          python test_simulate.py 
+          python test_simulate_smoothed.py 

@@ -1,6 +1,6 @@
-# user
+# simulate
 
-name: user_boot tests
+name: simulate_boot_empirical tests
 
 on:
   push:
@@ -43,4 +43,4 @@ jobs:
         timeout-minutes: 100
         run: |
           cd bootsp/tests
-          python test_user.py 
+          python test_simulate_empirical.py 

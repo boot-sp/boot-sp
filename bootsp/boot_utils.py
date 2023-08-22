@@ -13,6 +13,12 @@ class BootMethods(enum.Enum):
     Subsampling = "Subsampling"
     Bagging_with_replacement = "Bagging_with_replacement"
     Bagging_without_replacement = "Bagging_without_replacement"
+    Smoothed_boot_epi = "Smoothed_boot_epi"
+    Smoothed_boot_kernel = "Smoothed_boot_kernel"
+    Smoothed_boot_epi_quantile = "Smoothed_boot_epi_quantile"
+    Smoothed_boot_kernel_quantile = "Smoothed_boot_kernel_quantile"
+    Smoothed_bagging = "Smoothed_bagging"
+
 
     @classmethod
     def has_member_key(cls, key):
@@ -101,6 +107,14 @@ def cfg_for_boot():
                       domain=int,
                       default=None,
                       argparse = False)
+    cfg.add_to_config(name="smoothed_B_I",
+                    description="number of initial fixed points to use in smoothed bagging.",
+                    domain=int,
+                    default=None)
+    cfg.add_to_config(name="smoothed_center_sample_size",
+                description="number of points to sample from the fitted distribution for the gap center.",
+                domain=int,
+                default=None)
     return cfg
 
 
@@ -152,6 +166,8 @@ def cfg_from_json(json_fname):
     # get every cfg index from the json
     for idx in cfg:
         if idx not in options:
+            if "smoothed" in idx and "Smoothed" not in cfg.boot_method:
+                continue
             badtrip = True
             print(f"ERROR: {idx} not in the options read from {json_fname}")
             continue

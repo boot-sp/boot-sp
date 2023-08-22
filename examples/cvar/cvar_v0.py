@@ -4,13 +4,30 @@ from mpisppy.utils import config
 import mpisppy.scenario_tree as scenario_tree
 import mpisppy.utils.sputils as sputils
 import numpy as np
-import bootsp.statdist as statdist
-from bootsp.statdist.sampler import Sampler
 
 # Use this random stream:
 sstream = np.random.RandomState(1)
 
-def make_model(xi, num_scens, alpha = 0.1):
+def scenario_creator(scenario_name, num_scens=None, seedoffset=0):
+    """ Create the CVaR examples using Schultz method we always use
+    
+    Args:
+        scenario_name (str):
+            Name of the scenario to construct.
+        num_scens (int, optional):
+            Number of scenarios. We use it to compute _mpisppy_probability. 
+            Default is None.
+        seedoffset (int): used by confidence interval code
+    """
+    # scenario_name has the form <str><int> e.g. scen12, foobar7
+    # The digits are scraped off the right of scenario_name using regex then
+    # converted mod 3 into one of the below avg./avg./above avg. scenarios
+    scennum   = sputils.extract_num(scenario_name)
+
+    sstream.seed(scennum+seedoffset)  # allows for resampling easily
+    xi = sstream.normal(0,1)
+    #print(f"{scenario_name}: {xi}")
+    alpha = 0.1
 
     # Create the concrete model object
     model = pyo.ConcreteModel("Lam_CVaR")
@@ -47,45 +64,6 @@ def make_model(xi, num_scens, alpha = 0.1):
         model._mpisppy_probability = "uniform"
     return model
 
-def data_sampler(record_num, cfg):
-    # return a single point from a sample
-    # Note: we are syncronizing using the seed
-    sstream.seed(record_num + cfg.seed_offset)  
-    xi = sstream.normal(0,1)
-    return xi
-
-def scenario_creator(scenario_name, cfg):
-    """ Create the CVaR examples using Schultz method we always use
-    
-    Args:
-        scenario_name (str):
-            Name of the scenario to construct.
-       
-    """
-    # scenario_name has the form <str><int> e.g. scen12, foobar7
-    # The digits are scraped off the right of scenario_name using regex then
-    # converted mod 3 into one of the below avg./avg./above avg. scenarios
-
-    scennum   = sputils.extract_num(scenario_name)
-    sstream.seed(scennum + cfg.seed_offset)  # allows for resampling easily
-    # xi = np.random.normal(0,1)
-    # print(f"scennum: {scennum}, seed: {cfg.seed_offset}")
-
-    if getattr(cfg, "use_fitted", False):
-        # sampler works with a list
-        sampler = Sampler([cfg.fitted_distribution], sstream)
-        xi = sampler.sample_one()[0]
-        # unorm = sstream.uniform(0,1)
-        # xi = cfg.fitted_distribution.cdf_inverse(unorm)
-    else:
-        xi = sstream.normal(0,1)
-    # print(f"{scenario_name}: {xi}")
-    num_scens = cfg.get('num_scens', None)
-    # print("inside cvar.py")
-    # print(f"{num_scens= }")
-    return make_model(xi , num_scens, alpha = 0.1)
-
-   
 #=========
 def scenario_names_creator(num_scens,start=None):
     # (only for Amalgamator): return the full list of num_scens scenario names
@@ -103,29 +81,8 @@ def inparser_adder(cfg):
 #=========
 def kw_creator(cfg):
     # linked to the scenario_creator and inparser_adder
-    kwargs = {"cfg" : cfg}
+    kwargs = {"num_scens" : cfg.get('num_scens', None)}
     return kwargs
-
-def sample_tree_scen_creator(sname, stage, sample_branching_factors, seed,
-                             given_scenario=None, **scenario_creator_kwargs):
-    """ Create a scenario within a sample tree. Mainly for multi-stage and simple for two-stage.
-        (this function supports zhat and confidence interval code)
-    Args:
-        sname (string): scenario name to be created
-        stage (int >=1 ): for stages > 1, fix data based on sname in earlier stages
-        sample_branching_factors (list of ints): branching factors for the sample tree
-        seed (int): To allow random sampling (for some problems, it might be scenario offset)
-        given_scenario (Pyomo concrete model): if not None, use this to get data for ealier stages
-        scenario_creator_kwargs (dict): keyword args for the standard scenario creator funcion
-    Returns:
-        scenario (Pyomo concrete model): A scenario for sname with data in stages < stage determined
-                                         by the arguments
-    """
-    # Since this is a two-stage problem, we don't have to do much.
-    sca = scenario_creator_kwargs.copy()
-    sca["seed_offset"] = seed
-    sca["num_scens"] = sample_branching_factors[0]  # two-stage problem
-    return scenario_creator(sname, **sca)
 
 
 #============================
@@ -133,7 +90,7 @@ def scenario_denouement(rank, scenario_name, scenario):
     pass
 
 if __name__ == "__main__":
-    # main program just for developer testing
+    # main program just for developer testing (and therefore might not execute)
 
     solver_name = "cplex"
     cfg = config.Config()
