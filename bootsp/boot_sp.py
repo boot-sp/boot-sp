@@ -69,6 +69,7 @@ def process_optimal(cfg, module):
         opt_obj = tmp[0]
         opt_gap = tmp[1]
         print(f"   ...optimal value: {opt_obj}")
+        print(f"   ...optimality gap: {opt_gap}")
     else:
         print('No calculated optimal found, starting computing the "actual" optimal')
         print("Computing optimal function value on Rank 0 only")
@@ -102,7 +103,7 @@ def solve_routine(cfg, module, scenarios, num_threads=None, duplication = False)
     else:
         scenario_names = ['Scenario' + str(i) for i in scenarios]
         scenario_creator_kwargs['mapping'] = None
-    scenario_creator_kwargs["num_scens"] = len(scenario_names)
+    # scenario_creator_kwargs["num_scens"] = len(scenario_names)
 
     ef = sputils.create_EF(
         scenario_names,
@@ -148,7 +149,7 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
     scenario_creator_kwargs = module.kw_creator(cfg)  # we get a new one every time...
     scenario_creator_kwargs['module'] = module  # we are going to call a wrapper
     scenario_creator_kwargs["mapping"] = sample_mapping            
-    scenario_creator_kwargs["num_scens"] = len(scenario_names)
+    # scenario_creator_kwargs["num_scens"] = len(scenario_names)
 
     ev = xhat_eval.Xhat_Eval(xhat_eval_options,
                 scenario_names,
@@ -160,10 +161,6 @@ def evaluate_routine(cfg, module, xhat, scenario_names, sample_mapping):
     # nonant_cache = sputils.nonant_cache_from_ef(candidate_ef)
     # zhat=ev.evaluate(nonant_cache)
     zhat = ev.evaluate(xhat)
-
-    # objs_at_xhat = ev.objs_dict
-    # print(zhat)
-    # print(len(objs_at_xhat))
 
     return zhat
 
@@ -306,7 +303,7 @@ def classical_bootstrap(cfg, module, xhat, quantile = True):
 
         
         
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, dag_optimal, dag_upper, dag_gap
     else:
         return None, None, None
 
@@ -409,7 +406,7 @@ def subsampling(cfg, module, xhat):
         err_gap = np.sqrt(cfg.subsample_size / cfg.sample_size) * np.quantile(boot_gaps - dag_gap,  [1- alpha, alpha])
         ci_gap = dag_gap - err_gap
         
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, dag_optimal,  dag_upper, dag_gap
     else:
         return None, None, None
 
@@ -525,7 +522,7 @@ def extended_bootstrap(cfg, module, xhat):
 
 
 
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap
     else:
         return None, None, None
 
@@ -650,7 +647,7 @@ def bagging_bootstrap(cfg, module, xhat, replacement = True):
         ci_upper = [center_upper - dd * cov_upper, center_upper + dd * cov_upper]
         ci_gap = [center_gap - dd * cov_gap, center_gap + dd * cov_gap]
         
-        return ci_optimal,ci_upper, ci_gap
+        return ci_optimal,ci_upper, ci_gap, center_optimal, center_upper, center_gap
     else:
         return None, None, None
 

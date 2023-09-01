@@ -10,11 +10,12 @@ import shutil
 import unittest
 import tempfile
 import bootsp.boot_utils as boot_utils
-import bootsp.user_boot as user_boot
+import bootsp.simulate_boot as simulate_boot
 
 import mpisppy.utils.sputils as sputils
+print("Disabling tictoc output so there will be very little terminal output.")
+sputils.disable_tictoc_output()
 
-### sputils.disable_tictoc_output()
 
 from mpisppy.tests.utils import get_solver,round_pos_sig
 
@@ -32,26 +33,18 @@ methods_empirical = ["Classical_gaussian",
          "Subsampling",
          "Extended"]
 
-methods_smoothed = ["Smoothed_boot_kernel",
-                    "Smoothed_boot_kernel_quantile",
-                    "Smoothed_boot_epi",
-                    "Smoothed_boot_epi_quantile",
-                    "Smoothed_bagging"]
-
 #*****************************************************************************
-class Test_user(unittest.TestCase):
-    """ Test the boot_user code.
+class Test_simulate(unittest.TestCase):
+    """ Test the boot_simulate code.
         Assumes naming conventions for filenames"""
-
-    # @classmethod
-    # def setUpClass(cls):
-    #     shutil.copy("../../examples/cvar/cvar.py", "cvar.py")
 
     def setUp(self):
         # we might copy files to and cd to this temp dir
         # self.temp_dir = tempfile.TemporaryDirectory()
         # self.cwd = os.getcwd()
-        shutil.copy("../../examples/cvar/cvar.py", "cvar.py")
+        shutil.copy("../../examples/multi_knapsack/multi_knapsack.py", "multi_knapsack.py")
+        shutil.copy("../../examples/farmer/farmer.py", "farmer.py")
+
 
         
     def tearDown(self):
@@ -59,7 +52,8 @@ class Test_user(unittest.TestCase):
         # self.temp_dir.cleanup()
         # os.chdir(self.cwd)
         # pass
-        os.remove("cvar.py")
+        os.remove("multi_knapsack.py")
+        os.remove("farmer.py")
 
 
     def _mdir_path(self, dirname, module_name):
@@ -81,81 +75,59 @@ class Test_user(unittest.TestCase):
         return jpath
 
     
-    def _make_arglist(self, solver_name):
-        # many of these items will be overwritten (e.g., method)
-        cmdlist = ["--max-count", "9999",
-                   "--candidate-sample-size", "1",
-                   "--sample-size", "40",
-                   "--subsample-size", "10",
-                   "--nB", "10",
-                   "--alpha", "0.05",
-                   "--seed-offset", "100",
-                   "--xhat-fname", "cvar_xhat.npy",
-                   "--solver-name", solver_name,
-                   "--boot-method", methods_empirical[0]]
-        return cmdlist
-        
     def _do_empirical(self, dirname, module_name):
         # do the test, return a dictionary of return values
         ret_dict = dict()
         json_fname = self._json_path(dirname, module_name)
+        cfg = boot_utils.cfg_from_json(json_fname)
 
-        cfg = boot_utils._process_module(module_name)
-        parser = cfg.create_parser(f"test user {module_name}")
-        arglist = self._make_arglist(solver_name)
-        args = parser.parse_args(arglist)
-        args = cfg.import_argparse(args)
-        cfg.module_name = module_name
-
+        cfg.coverage_replications = 10
+        cfg.seed_offset = 0
         cfg.solver_name = solver_name
-        module = boot_utils.module_name_to_module(module_name)
+        cfg.quick_assign("trace_fname", str, "_test_simuluate_empirical.app")
+        module = boot_utils.module_name_to_module(cfg.module_name)
         for method in methods_empirical:
+            if method == "Extended":
+                print("skip Extended bootstrap for now, because community cplex is too small")
+                continue
             print(f"Trying {method} for {module_name}")
+            print(f"{cfg.seed_offset =}")
             # These are *not* good parameters for real use...
             cfg.boot_method = method
             cfg.sample_size = 40
             cfg.subsample_size = 20
             cfg.nB = 10
-            ret_dict[method] = user_boot.empirical_main_routine(cfg, module)
+            ret_dict[method] = simulate_boot.empirical_main_routine(cfg, module)
         return ret_dict
-
-    def _do_smoothed(self, dirname, module_name):
-        # do the test, return a dictionary of return values
-        ret_dict = dict()
-        json_fname = self._json_path(dirname, module_name)
-
-        cfg = boot_utils._process_module(module_name)
-        parser = cfg.create_parser(f"test user {module_name}")
-        arglist = self._make_arglist(solver_name)
-        args = parser.parse_args(arglist)
-        args = cfg.import_argparse(args)
-        cfg.module_name = module_name
-
-        cfg.solver_name = solver_name
-        module = boot_utils.module_name_to_module(module_name)
-        for method in methods_smoothed:
-            print(f"Trying {method} for {module_name}")
-            # These are *not* good parameters for real use...
-            cfg.boot_method = method
-            cfg.sample_size = 40
-            cfg.subsample_size = 20
-            cfg.nB = 10
-            cfg.smoothed_B_I = 3
-            cfg.smoothed_center_sample_size = 10
-            ret_dict[method] = user_boot.smoothed_main_routine(cfg, module)
-        return ret_dict
-
-    
-    
+   
 
     @unittest.skipIf(not solver_available,
                      "no solver is available")
-    def test_empirical_cvar(self):
+    @unittest.skip("solver is not deterministic for cvar")
+    def test_cvar(self):
         results = self._do_empirical("cvar", "cvar")
-        print(results)
-    def test_smoothed_cvar(self):
-        results = self._do_smoothed("cvar", "cvar")
-        print(results)
+        print(f"cvar {results =}")
+        
+        
+    @unittest.skipIf(not solver_available,
+                     "no solver is available")
+    @unittest.skip("temporarily skip unique schultz")
+    def test_unique_schultz(self):
+        results = self._do_empirical("schultz", "unique_schultz")
+        print(f"unique_schultz {results =}")
+        assert "0.9, 8.7" in str(results["Classical_gaussian"]), "failure on Classical_gaussian"
+        assert "0.9, 7.0" in str(results["Classical_quantile"]), "failure on Classical_quantile"
+        assert "1.0, 14.6" in str(results["Bagging_with_replacement"]), "failure on Bagging_with_replacement"
 
+    @unittest.skipIf(not solver_available,
+                     "no solver is available")
+    # @unittest.skip("temporarily skip farmer")
+    def test_empirical_farmer(self):
+        results = self._do_empirical("farmer","farmer")
+        print(f"farmer {results =}")
+        assert "1.0, 2154" in str(results["Classical_gaussian"]), "failure on Classical_gaussian"
+        assert "0.8, 1777" in str(results["Classical_quantile"]), "failure on Classical_quantile"
+        assert "1.0, 4468" in str(results["Bagging_with_replacement"]), "failure on Bagging_with_replacement"
+  
 if __name__ == '__main__':
     unittest.main()

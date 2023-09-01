@@ -48,6 +48,26 @@ if __name__ == '__main__':
     cfg = boot_utils.cfg_from_json(json_fname)
 
     boot_utils.check_BFs(cfg)
+
+    cfg.add_to_config(name="use_fitted",
+                    description="a boolean to control use of fitted distribution",
+                    domain=bool,
+                    default=None,
+                    argparse=False)
+    cfg.use_fitted = False
+
+    if "deterministic_data_json" in cfg:
+        json_fname = cfg.deterministic_data_json
+        try:
+            with open(json_fname, "r") as read_file:
+                detdata = json.load(read_file)
+        except:
+            print(f"Could not read the json file: {json_fname}")
+            raise
+        cfg.add_to_config("detdata",
+                        description="determinstic data from json file",
+                        domain=dict,
+                        default=detdata)
     
     module = boot_utils.module_name_to_module(cfg.module_name)
 

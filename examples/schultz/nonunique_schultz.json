@@ -12,5 +12,7 @@
     "solver_name": "cplex_direct",
     "boot_method": "Classical_gaussian",
     "trace_fname" : "None",
-    "coverage_replications": 100
+    "coverage_replications": 100,
+    "smoothed_B_I": 10,
+    "smoothed_center_sample_size":100
 }
