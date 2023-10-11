@@ -4,7 +4,7 @@ Data-based, two-stage stochastic programming using bootstrap and bagging for con
 
 ## Documentation
 
-There is documentation on [readthedocs](https://boot-sp.readthedocs.io/en/latest/) and a paper on [Optimization Online](https://optimization-online.org/2022/08/software-for-data-based-stochastic-programming-using-bootstrap-estimation/)
+There is documentation on [readthedocs](https://boot-sp.readthedocs.io/en/latest/) and two papers listed below:
 
 ## Citation
 
@@ -13,6 +13,13 @@ There is documentation on [readthedocs](https://boot-sp.readthedocs.io/en/latest
   author={Chen, Xiaotie and Woodruff, David L},
   year={2023},
   journal={INFORMS Journal on Computing},
+}
+
+@misc{boot_distr,
+  title={Distributions and Bootstrap for Data-based Stochastic Programming},
+  author={Chen, Xiaotie and Woodruff, David L},
+  year={2023},
+  howpublished={\url{https://optimization-online.org/2023/08/distributions-and-bootstrap-for-data-based-stochastic-programming/}},
 }
 
 ## internal tests
