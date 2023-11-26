@@ -60,7 +60,7 @@ root_doc = 'index'
 
 # General information about the project.
 project = u'boot-sp'
-copyright = u'2022'
+copyright = u'2022-2023'
 author = u'David L. Woodruff'
 
 # The version info for the project you're documenting, acts as replacement for
