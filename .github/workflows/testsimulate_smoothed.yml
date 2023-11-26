@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           conda install mpi4py setuptools
-          pip install pyomo xpress cplex matplotlib 
+          pip install pyomo xpress cplex matplotlib pandas
           conda install -c conda-forge ipopt
 
       - name: set up mpi-sppy
