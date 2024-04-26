@@ -34,7 +34,7 @@ class BootMethods(enum.Enum):
     
 def module_name_to_module(module_name):
     if inspect.ismodule(module_name):
-        module = mname
+        module = module_name
     else:
         module = importlib.import_module(module_name)
     return module
