@@ -33,11 +33,11 @@ jobs:
       - name: set up mpi-sppy
         run: |
           git clone https://github.com/pyomo/mpi-sppy
-          cd mpi-sppy && python setup.py develop
+          cd mpi-sppy && pip install -e .
 
       - name: setup the program
         run: |
-          python setup.py develop
+          pip install -e .
 
       - name: run tests
         timeout-minutes: 100
