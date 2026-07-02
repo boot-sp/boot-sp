@@ -15,11 +15,14 @@ There is documentation on [readthedocs](https://boot-sp.readthedocs.io/en/latest
   journal={INFORMS Journal on Computing},
 }
 
-@misc{boot_distr,
+Chen, X., Woodruff, D.L. Distributions and bootstrap for data-based stochastic programming. Comput Manag Sci 21, 33 (2024). https://doi.org/10.1007/s10287-024-00512-3
+
+@article{boot_distr,
   title={Distributions and Bootstrap for Data-based Stochastic Programming},
   author={Chen, Xiaotie and Woodruff, David L},
-  year={2023},
-  howpublished={\url{https://optimization-online.org/2023/08/distributions-and-bootstrap-for-data-based-stochastic-programming/}},
+  year={2024},
+  journal={Comput Manag Sci},
+  volume={21}
 }
 
 ## internal tests
